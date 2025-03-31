@@ -1,0 +1,28 @@
+{
+  "name": "ai-sdk-wxt-app",
+  "description": "ai-sdk-wxt-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "vue-tsc --noEmit",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "ai": "^4.2.9",
+    "vue": "^3.5.12",
+    "@slow-groovin/openai-compatible": "workspace:*"
+  },
+  "devDependencies": {
+    "@wxt-dev/module-vue": "^1.0.1",
+    "typescript": "5.6.3",
+    "vue-tsc": "^2.1.10",
+    "wxt": "^0.20.0"
+  }
+}
