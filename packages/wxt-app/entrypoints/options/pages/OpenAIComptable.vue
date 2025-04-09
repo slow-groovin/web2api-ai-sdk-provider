@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { generateText } from 'ai'
 import { createOpenAICompatible } from '@slow-groovin/openai-compatible';
-
+const rs = ref<any>({})
 async function chat() {
   const model = createOpenAICompatible({
     name: 'siliconflow',
@@ -10,11 +10,12 @@ async function chat() {
   })
 
 
-  const rs = await generateText({
+  const _rs = await generateText({
     model: model.languageModel('Qwen/Qwen2.5-7B-Instruct'),
     prompt: 'give me a random sentence'
   })
-  console.log('rs', rs)
+  rs.value = rs
+  console.log('rs', _rs)
 }
 </script>
 
@@ -22,6 +23,7 @@ async function chat() {
   <div>
     <h1>AI Debug</h1>
     <button @click="chat">generateText</button>
+    <pre>{{ rs }}</pre>
   </div>
 </template>
 

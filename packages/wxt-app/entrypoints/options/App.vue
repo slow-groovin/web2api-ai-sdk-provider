@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import HelloWorld from '@/components/HelloWorld.vue';
-import OpenAIComptable from './pages/OpenAIComptable.vue';
 </script>
 
 <template>
-  <OpenAIComptable />
+  <RouterView />
 </template>
 
 <style scoped>

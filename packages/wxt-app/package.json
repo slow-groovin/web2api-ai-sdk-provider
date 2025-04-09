@@ -15,9 +15,11 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
+    "@slow-groovin/openai-compatible": "workspace:*",
+    "@slow-groovin/custom-provider-playground": "workspace:*",
     "ai": "^4.2.9",
     "vue": "^3.5.12",
-    "@slow-groovin/openai-compatible": "workspace:*"
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@wxt-dev/module-vue": "^1.0.1",
