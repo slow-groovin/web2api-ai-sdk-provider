@@ -15,9 +15,12 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
-    "@slow-groovin/openai-compatible": "workspace:*",
     "@slow-groovin/custom-provider-playground": "workspace:*",
+    "@slow-groovin/openai-compatible": "workspace:*",
+    "@vueuse/core": "^13.1.0",
     "ai": "^4.2.9",
+    "moonshot-web-ai-provider": "workspace:*",
+    "radash": "^12.1.0",
     "vue": "^3.5.12",
     "vue-router": "^4.5.0"
   },

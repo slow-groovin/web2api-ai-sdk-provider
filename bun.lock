@@ -10,17 +10,49 @@
         "typescript": "^5",
       },
     },
-    "packages/custom-provider-playground": {
-      "name": "@slow-groovin/custom-provider-playground",
+    "packages/moonshot-web-ai-provider": {
+      "name": "moonshot-web-ai-provider",
       "version": "0.0.1",
       "dependencies": {
         "@ai-sdk/provider-utils": "2.1.6",
+        "@wxt-dev/storage": "^1.1.1",
       },
       "devDependencies": {
         "vitest": "^3.1.1",
       },
     },
-    "packages/openai-comp": {
+    "packages/test-app-chrome-extension": {
+      "name": "ai-sdk-wxt-app",
+      "version": "0.0.0",
+      "dependencies": {
+        "@slow-groovin/custom-provider-playground": "workspace:*",
+        "@slow-groovin/openai-compatible": "workspace:*",
+        "@vueuse/core": "^13.1.0",
+        "ai": "^4.2.9",
+        "moonshot-web-ai-provider": "workspace:*",
+        "radash": "^12.1.0",
+        "vue": "^3.5.12",
+        "vue-router": "^4.5.0",
+      },
+      "devDependencies": {
+        "@wxt-dev/module-vue": "^1.0.1",
+        "typescript": "5.6.3",
+        "vue-tsc": "^2.1.10",
+        "wxt": "^0.20.0",
+      },
+    },
+    "packages/test-custom-provider": {
+      "name": "@slow-groovin/custom-provider-playground",
+      "version": "0.0.1",
+      "dependencies": {
+        "@ai-sdk/provider-utils": "2.1.6",
+        "radash": "^12.1.0",
+      },
+      "devDependencies": {
+        "vitest": "^3.1.1",
+      },
+    },
+    "packages/test-openai-comp": {
       "name": "@slow-groovin/openai-compatible",
       "version": "0.1.8",
       "dependencies": {
@@ -34,23 +66,6 @@
       },
       "peerDependencies": {
         "zod": "^3.0.0",
-      },
-    },
-    "packages/wxt-app": {
-      "name": "ai-sdk-wxt-app",
-      "version": "0.0.0",
-      "dependencies": {
-        "@slow-groovin/custom-provider-playground": "workspace:*",
-        "@slow-groovin/openai-compatible": "workspace:*",
-        "ai": "^4.2.9",
-        "vue": "^3.5.12",
-        "vue-router": "^4.5.0",
-      },
-      "devDependencies": {
-        "@wxt-dev/module-vue": "^1.0.1",
-        "typescript": "5.6.3",
-        "vue-tsc": "^2.1.10",
-        "wxt": "^0.20.0",
       },
     },
   },
@@ -195,9 +210,9 @@
 
     "@sindresorhus/is": ["@sindresorhus/is@5.6.0", "", {}, "sha512-TV7t8GKYaJWsn00tFDqBw8+Uqmr8A0fRU1tvTQhyZzGv0sJCGRQL3JGMI3ucuKo3XIZdUP+Lx7/gh2t3lewy7g=="],
 
-    "@slow-groovin/custom-provider-playground": ["@slow-groovin/custom-provider-playground@workspace:packages/custom-provider-playground"],
+    "@slow-groovin/custom-provider-playground": ["@slow-groovin/custom-provider-playground@workspace:packages/test-custom-provider"],
 
-    "@slow-groovin/openai-compatible": ["@slow-groovin/openai-compatible@workspace:packages/openai-comp"],
+    "@slow-groovin/openai-compatible": ["@slow-groovin/openai-compatible@workspace:packages/test-openai-comp"],
 
     "@szmarczak/http-timer": ["@szmarczak/http-timer@5.0.1", "", { "dependencies": { "defer-to-connect": "^2.0.1" } }, "sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw=="],
 
@@ -218,6 +233,8 @@
     "@types/minimatch": ["@types/minimatch@3.0.5", "", {}, "sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ=="],
 
     "@types/node": ["@types/node@18.19.84", "", { "dependencies": { "undici-types": "~5.26.4" } }, "sha512-ACYy2HGcZPHxEeWTqowTF7dhXN+JU1o7Gr4b41klnn6pj2LD6rsiGqSZojMdk1Jh2ys3m76ap+ae1vvE4+5+vg=="],
+
+    "@types/web-bluetooth": ["@types/web-bluetooth@0.0.21", "", {}, "sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA=="],
 
     "@types/ws": ["@types/ws@8.18.0", "", { "dependencies": { "@types/node": "*" } }, "sha512-8svvI3hMyvN0kKCJMvTJP/x6Y/EoQbepff882wL+Sn5QsXb3etnamgrJq4isrBxSJj5L2AuXcI0+bgkoAXGUJw=="],
 
@@ -269,6 +286,12 @@
 
     "@vue/shared": ["@vue/shared@3.5.13", "", {}, "sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ=="],
 
+    "@vueuse/core": ["@vueuse/core@13.1.0", "", { "dependencies": { "@types/web-bluetooth": "^0.0.21", "@vueuse/metadata": "13.1.0", "@vueuse/shared": "13.1.0" }, "peerDependencies": { "vue": "^3.5.0" } }, "sha512-PAauvdRXZvTWXtGLg8cPUFjiZEddTqmogdwYpnn60t08AA5a8Q4hZokBnpTOnVNqySlFlTcRYIC8OqreV4hv3Q=="],
+
+    "@vueuse/metadata": ["@vueuse/metadata@13.1.0", "", {}, "sha512-+TDd7/a78jale5YbHX9KHW3cEDav1lz1JptwDvep2zSG8XjCsVE+9mHIzjTOaPbHUAk5XiE4jXLz51/tS+aKQw=="],
+
+    "@vueuse/shared": ["@vueuse/shared@13.1.0", "", { "peerDependencies": { "vue": "^3.5.0" } }, "sha512-IVS/qRRjhPTZ6C2/AM3jieqXACGwFZwWTdw5sNTSKk2m/ZpkuuN+ri+WCVUP8TqaKwJYt/KuMwmXspMAw8E6ew=="],
+
     "@webext-core/fake-browser": ["@webext-core/fake-browser@1.3.2", "", { "dependencies": { "lodash.merge": "^4.6.2" } }, "sha512-jFyPWWz+VkHAC9DRIiIPOyu6X/KlC8dYqSKweHz6tsDb86QawtVgZSpYcM+GOQBlZc5DHFo92jJ7cIq4uBnU0A=="],
 
     "@webext-core/isolated-element": ["@webext-core/isolated-element@1.1.2", "", { "dependencies": { "is-potential-custom-element-name": "^1.0.1" } }, "sha512-CNHYhsIR8TPkPb+4yqTIuzaGnVn/Fshev5fyoPW+/8Cyc93tJbCjP9PC1XSK6fDWu+xASdPHLZaoa2nWAYoxeQ=="],
@@ -287,7 +310,7 @@
 
     "ai": ["ai@4.2.9", "", { "dependencies": { "@ai-sdk/provider": "1.1.0", "@ai-sdk/provider-utils": "2.2.2", "@ai-sdk/react": "1.2.4", "@ai-sdk/ui-utils": "1.2.3", "@opentelemetry/api": "1.9.0", "jsondiffpatch": "0.6.0" }, "peerDependencies": { "react": "^18 || ^19 || ^19.0.0-rc", "zod": "^3.23.8" }, "optionalPeers": ["react"] }, "sha512-VSlgZaf86+UsQr9XRnMbEWANyR5z+ugDm3+b0fLtpsM7TRC0rW37FPIREKM2nrutmvGXRfQ6mf6BPQYeR/6Jng=="],
 
-    "ai-sdk-wxt-app": ["ai-sdk-wxt-app@workspace:packages/wxt-app"],
+    "ai-sdk-wxt-app": ["ai-sdk-wxt-app@workspace:packages/test-app-chrome-extension"],
 
     "alien-signals": ["alien-signals@1.0.13", "", {}, "sha512-OGj9yyTnJEttvzhTUWuscOvtqxq5vrhF7vL9oS0xJ2mK0ItPYP1/y+vCFebfxoEyAz0++1AIwJ5CMr+Fk3nDmg=="],
 
@@ -721,6 +744,8 @@
 
     "moment": ["moment@2.30.1", "", {}, "sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how=="],
 
+    "moonshot-web-ai-provider": ["moonshot-web-ai-provider@workspace:packages/moonshot-web-ai-provider"],
+
     "ms": ["ms@2.1.3", "", {}, "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="],
 
     "muggle-string": ["muggle-string@0.4.1", "", {}, "sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ=="],
@@ -824,6 +849,8 @@
     "queue-microtask": ["queue-microtask@1.2.3", "", {}, "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="],
 
     "quick-lru": ["quick-lru@5.1.1", "", {}, "sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA=="],
+
+    "radash": ["radash@12.1.0", "", {}, "sha512-b0Zcf09AhqKS83btmUeYBS8tFK7XL2e3RvLmZcm0sTdF1/UUlHSsjXdCcWNxe7yfmAlPve5ym0DmKGtTzP6kVQ=="],
 
     "rc": ["rc@1.2.8", "", { "dependencies": { "deep-extend": "^0.6.0", "ini": "~1.3.0", "minimist": "^1.2.0", "strip-json-comments": "~2.0.1" }, "bin": { "rc": "./cli.js" } }, "sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw=="],
 

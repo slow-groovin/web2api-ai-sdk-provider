@@ -14,6 +14,7 @@ import {
   CustomChatSettings,
   OpenAICompatibleCompletionConfig,
 } from "./custom-chat-setting-1";
+import { list, random, sleep } from "radash";
 
 export class CustomChatLanguageModel implements LanguageModelV1 {
   specificationVersion: "v1" = "v1";
@@ -67,13 +68,70 @@ export class CustomChatLanguageModel implements LanguageModelV1 {
       warnings: [],
     };
   }
-  doStream(options: LanguageModelV1CallOptions): PromiseLike<{
+  async doStream(options: LanguageModelV1CallOptions): Promise<{
     stream: ReadableStream<LanguageModelV1StreamPart>;
     rawCall: { rawPrompt: unknown; rawSettings: Record<string, unknown> };
     rawResponse?: { headers?: Record<string, string> };
     request?: { body?: string };
     warnings?: Array<LanguageModelV1CallWarning>;
   }> {
-    throw new Error("Method not implemented.");
+    const stream = new ReadableStream<LanguageModelV1StreamPart>({
+      async start(_controller) {
+        await sleep(1500);
+
+        _controller.enqueue({
+          type: "response-metadata",
+          id: "id-1",
+          modelId: "-model",
+          timestamp: new Date(),
+        });
+
+        // controller = _controller;
+        for (const i of list(1, 100)) {
+          await sleep(random(50, 500));
+          _controller.enqueue({
+            type: "text-delta",
+            textDelta: i + ".piece  ",
+          });
+          // console.log("enqueue ", i);
+        }
+
+        _controller.enqueue({
+          type: "finish",
+          finishReason: "stop",
+          usage: {
+            completionTokens: 100,
+            promptTokens: 100,
+          },
+        });
+
+        _controller.close();
+      },
+    });
+
+    const { prompt } = options;
+
+    //构建返回对象
+    const rawCall = { rawPrompt: prompt, rawSettings: {} };
+    let rawResponse: { headers?: Record<string, string> } = {
+      headers: {
+        "access-control-allow-origin": "*",
+        "cache-control": "no-cache",
+        "content-type": "text/event-stream",
+        date: "Thu, 10 Apr 2025 13:25:34 GMT",
+        server: "nginx",
+        "server-timing": "inner; dur=22",
+        "strict-transport-security": "max-age=15724800; includeSubDomains",
+      },
+    };
+    let request: { body?: string } = { body: "-body" };
+    console.log("request", request);
+    return {
+      stream,
+      rawCall,
+      warnings: [],
+      rawResponse,
+      request,
+    };
   }
 }

@@ -1,16 +1,14 @@
 {
-  "name": "@slow-groovin/custom-provider-playground",
+  "name": "moonshot-web-ai-provider",
   "version": "0.0.1",
   "type": "module",
   "module": "src/index.ts",
   "exports": {
-    "./package.json": "./package.json",
-    ".": "./src/index.ts",
-    "./custom": "./src/custom-provider-1.ts"
+    ".": "./src/index.ts"
   },
   "dependencies": {
     "@ai-sdk/provider-utils": "2.1.6",
-    "radash": "^12.1.0"
+    "@wxt-dev/storage": "^1.1.1"
   },
   "devDependencies": {
     "vitest": "^3.1.1"

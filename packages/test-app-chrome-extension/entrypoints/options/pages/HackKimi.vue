@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { generateText } from 'ai'
 import { createOpenAICompatible } from '@slow-groovin/openai-compatible';
-import { version, customProvider } from '@slow-groovin/custom-provider-playground';
-import { createCustomProvider } from '../../../../custom-provider-playground/src/custom-provider-1';
-import { refreshToken } from './kimi-helper';
-
+import { version, customProvider, createCustomProvider } from '@slow-groovin/custom-provider-playground';
+import { refreshToken, getToken, createChat, sendMessage, callUserApi } from './kimi-helper';
+import { useLocalStorage } from '@vueuse/core'
 const rs = ref<any>({})
+const sendMessageRespText = useLocalStorage('kimi-hack-send-message-resp-text', '')
+const createdConversationId = useLocalStorage('kimi-conversation-id', '')
+
 const token = ref<{
   access_token: string;
   refresh_token: string;
@@ -13,48 +15,54 @@ const token = ref<{
 async function setToken() {
   token.value = await refreshToken()
 }
-async function chat() {
-  console.log('version', version)
-  const provier = createCustomProvider({
-    apiKey: 'sk-' + version,
-    baseURL: 'http://test.cc/' + version,
-    headers: {
-      'by': 'provider' + version
-    }
-  })
-  const model = provier.chat('ministral-3b-latest', {
-    safePrompt: true
-  })
-  const _rs = await generateText({
-    model: model,
-    topK: 1,
-    prompt: 'hello',
-    headers: {
-      'test': "wxt-app"
-    }
-  })
-  const { text, ...otherRs } = _rs
-  console.log('text', text)
-  rs.value = _rs
 
+async function createChatWrapper() {
+  const rs = await createChat()
+  const { id } = rs
+  createdConversationId.value = id
 }
 
-async function normalFetch() {
-  fetch('https://www.baidu.com').then(rs => {
-    rs.text().then(_rs => console.log('fetch:', _rs))
+async function sendMessageWrapper() {
+  if (!createdConversationId.value) {
+    return;
+  }
+  const text = await sendMessage({
+    conversationId: createdConversationId.value,
+    message: '(reply in chinese)China carried out a tariff counterattack on April 8th. How should the we (we are United States) respond? '
   })
-
+  sendMessageRespText.value = text
 }
+
 </script>
 
 <template>
   <div>
     <h1>Hack Kimi</h1>
-    <button @click="chat">generateText</button>
+    <button @click="callUserApi">callUserApi</button>
     <button @click="setToken">refreshToken</button>
-    <button @click="normalFetch">fetchSample</button>
+    <button @click="getToken">getToken</button>
+    <button @click="createChatWrapper">createChat</button>
+    <button @click="sendMessageWrapper">sendMessageWrapper</button>
+
     <pre>{{ rs }}</pre>
+
+    <div class="block">
+      <h3>conversation id</h3>
+      <input type="text" v-model="createdConversationId" disabled />
+    </div>
+    <div class="block">
+      <h3>sendMessageRespText:</h3>
+      <pre>{{ sendMessageRespText }}</pre>
+    </div>
+
+
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+div.block {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+}
+</style>

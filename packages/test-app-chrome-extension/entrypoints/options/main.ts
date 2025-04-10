@@ -8,6 +8,7 @@ import GlobalLayout from "./layout/GlobalLayout.vue";
 
 import CustomProvider from "./pages/CustomProvider.vue";
 import HackKimi from "./pages/HackKimi.vue";
+import MoonshotWebProvider from "./pages/MoonshotWebProvider.vue";
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -30,6 +31,10 @@ const router = createRouter({
         {
           path: "hack-kimi",
           component: HackKimi,
+        },
+        {
+          path: "moonshot-web-provider",
+          component: MoonshotWebProvider,
         },
       ],
     },

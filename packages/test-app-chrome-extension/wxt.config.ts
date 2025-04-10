@@ -4,7 +4,7 @@ import { defineConfig } from "wxt";
 export default defineConfig({
   modules: ["@wxt-dev/module-vue"],
   manifest: {
-    permissions: ["webRequest", "webRequestBlocking"],
+    permissions: ["webRequest", "webRequestBlocking", "storage"],
     host_permissions: ["<all_urls>"],
   },
 });
