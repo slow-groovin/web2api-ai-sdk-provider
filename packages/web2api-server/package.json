@@ -1,0 +1,20 @@
+{
+  "name": "web2api-server",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "build": "tsc && tsc-alias",
+    "drizzle-push": "tsx node_modules/drizzle-kit/bin.cjs push"
+  },
+  "exports": {
+    "./type": "./src/ws/type.ts"
+  },
+  "dependencies": {
+    "hono": "^4.6.19",
+    "radash": "^12.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "vitest": "^3.1.1"
+  }
+}

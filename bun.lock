@@ -33,6 +33,7 @@
         "radash": "^12.1.0",
         "vue": "^3.5.12",
         "vue-router": "^4.5.0",
+        "web2api-server": "workspace:*",
       },
       "devDependencies": {
         "@wxt-dev/module-vue": "^1.0.1",
@@ -66,6 +67,17 @@
       },
       "peerDependencies": {
         "zod": "^3.0.0",
+      },
+    },
+    "packages/web2api-server": {
+      "name": "web2api-server",
+      "dependencies": {
+        "hono": "^4.6.19",
+        "radash": "^12.1.0",
+        "zod": "^3.24.2",
+      },
+      "devDependencies": {
+        "vitest": "^3.1.1",
       },
     },
   },
@@ -580,6 +592,8 @@
 
     "highlight.js": ["highlight.js@10.7.3", "", {}, "sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A=="],
 
+    "hono": ["hono@4.7.6", "", {}, "sha512-564rVzELU+9BRqqx5k8sT2NFwGD3I3Vifdb6P7CmM6FiarOSY+fDC+6B+k9wcCb86ReoayteZP2ki0cRLN1jbw=="],
+
     "hookable": ["hookable@5.5.3", "", {}, "sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ=="],
 
     "html-escaper": ["html-escaper@3.0.3", "", {}, "sha512-RuMffC89BOWQoY0WKGpIhn5gX3iI54O6nRA0yC124NYVtzjmFWBIiFd8M0x+ZdX0P9R4lADg1mgP8C7PxGOWuQ=="],
@@ -1033,6 +1047,8 @@
     "wcwidth": ["wcwidth@1.0.1", "", { "dependencies": { "defaults": "^1.0.3" } }, "sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg=="],
 
     "web-ext-run": ["web-ext-run@0.2.2", "", { "dependencies": { "@babel/runtime": "7.24.7", "@devicefarmer/adbkit": "3.2.6", "bunyan": "1.8.15", "chrome-launcher": "1.1.0", "debounce": "1.2.1", "es6-error": "4.1.1", "firefox-profile": "4.6.0", "fs-extra": "11.2.0", "fx-runner": "1.4.0", "mkdirp": "3.0.1", "multimatch": "6.0.0", "mz": "2.7.0", "node-notifier": "10.0.1", "parse-json": "7.1.1", "promise-toolbox": "0.21.0", "set-value": "4.1.0", "source-map-support": "0.5.21", "strip-bom": "5.0.0", "strip-json-comments": "5.0.1", "tmp": "0.2.3", "update-notifier": "6.0.2", "watchpack": "2.4.1", "ws": "8.18.0", "zip-dir": "2.0.0" } }, "sha512-GD59q5/1wYQJXTHrljMZaBa3cCz+Jj3FMDLYgKyAa34TPcHSuMaGqp7TcLJ66PCe43C3hmbEAZd8QCpAB34eiw=="],
+
+    "web2api-server": ["web2api-server@workspace:packages/web2api-server"],
 
     "webpack-virtual-modules": ["webpack-virtual-modules@0.6.2", "", {}, "sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ=="],
 

@@ -9,6 +9,8 @@ import GlobalLayout from "./layout/GlobalLayout.vue";
 import CustomProvider from "./pages/CustomProvider.vue";
 import HackKimi from "./pages/HackKimi.vue";
 import MoonshotWebProvider from "./pages/MoonshotWebProvider.vue";
+import WebsocketInteraction from "./pages/WebsocketInteraction.vue";
+import WebsocketClientImplementation from "./pages/WebsocketClientImplementation.vue";
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -35,6 +37,14 @@ const router = createRouter({
         {
           path: "moonshot-web-provider",
           component: MoonshotWebProvider,
+        },
+        {
+          path: "websocket-interaction-sample",
+          component: WebsocketInteraction,
+        },
+        {
+          path: "websocket-impl",
+          component: WebsocketClientImplementation,
         },
       ],
     },

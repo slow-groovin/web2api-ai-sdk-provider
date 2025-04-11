@@ -17,6 +17,7 @@
   "dependencies": {
     "@slow-groovin/custom-provider-playground": "workspace:*",
     "@slow-groovin/openai-compatible": "workspace:*",
+    "web2api-server": "workspace:*",
     "@vueuse/core": "^13.1.0",
     "ai": "^4.2.9",
     "moonshot-web-ai-provider": "workspace:*",
