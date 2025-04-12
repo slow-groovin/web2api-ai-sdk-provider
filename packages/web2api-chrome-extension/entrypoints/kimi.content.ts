@@ -1,0 +1,15 @@
+export default defineContentScript({
+  matches: ["*://*.moonshot.cn/*"],
+  main() {
+    console.log("Hello moonshot.");
+    // console.log("window.localStorage", window.localStorage);
+    storage.setItem(
+      "local:kimi-access_token",
+      window.localStorage.access_token
+    );
+    storage.setItem(
+      "local:kimi-refresh_token",
+      window.localStorage.refresh_token
+    );
+  },
+});

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Hono } from 'hono'
 import { RxStartChatType, TxType } from 'web2api-server/type'
 import { RxRegisterType, RxStreamType } from 'web2api-server/type';
 import { streamText } from 'ai';
@@ -7,14 +6,17 @@ import { moonshotWebProvider } from 'moonshot-web-ai-provider';
 console.log('Hono',)
 let ws: WebSocket
 const host = 'localhost:3001'
+/*
+ *  a copy of code in this file will run in background.js
+ */
 /**
  * init ws, send `register` message
  */
 async function init() {
-  const url = `ws://${host}/ws`; // 注意：WebSocket使用ws://协议而不是http://
+  const url = `ws://${host}/ws`;
   ws = new WebSocket(url);
   ws.onopen = () => {
-    console.log('WebSocket连接已建立');
+    console.log('WebSocket to web2api-server had been opened.');
     // 可以发送初始消息
     const registerMsg: RxRegisterType = {
       type: 'register',
@@ -83,20 +85,11 @@ async function init() {
   ws.onerror = (error) => {
     console.error('WebSocket错误:', error);
   };
+
+  fetchServerApi()
 }
 
-async function sendWsMessage() {
-  // 示例：发送消息的函数
-  const message = { type: "message", content: 'hello from html.' }
-  if (ws.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify(message));
-    return true;
-  } else {
-    console.error('WebSocket连接未打开');
-    return false;
-  }
 
-}
 
 async function closeWs() {
   ws.close()
@@ -114,7 +107,17 @@ async function fetchServerApi() {
 }
 const serverCompletionText = ref('')
 async function fetchCompletion() {
-  fetch(`http://${host}/v1/completion`, {
+  fetch(`http://${host}/v1/chat/completions`, {
+    body: JSON.stringify({
+      model: 'moonshot',
+      messages: [
+        {
+          role: 'user',
+          content: '请给我一个随机的段子'
+        }
+      ],
+      stream: true,
+    }),
     method: 'POST'
   }).then(async (res) => {
     const reader = res.body?.getReader();
@@ -129,7 +132,8 @@ async function fetchCompletion() {
       done = readerDone;
       if (value) {
         const chunk = decoder.decode(value, { stream: true });
-        serverCompletionText.value += parseSSEMessage(chunk).data;
+        const dataPart = parseSSEMessage(chunk).data;
+        serverCompletionText.value += (JSON.parse(dataPart).choices as any[]).map(c => c.delta.content).join('')
       }
     }
   }).catch((error) => {
@@ -180,28 +184,33 @@ function parseSSEMessage(sseText: string) {
 
   <h1>Impl Client side of `web2api-server`</h1>
   <button @click="init">init</button>
-  <button @click="sendWsMessage">sendWsMessage</button>
   <button @click="closeWs">closeWs</button>
 
   <div class="block">
-    <h2>server control api</h2>
+    <h2>server control api (`/api/...`)</h2>
     <div>
       <div>version: {{ serverVersion }}</div>
       <div>state: {{ serverState }}</div>
       <div>support: {{ serverSupport }}</div>
-      <button @click="fetchServerApi">fetch</button>
+      <button @click="fetchServerApi">fetch </button>
     </div>
   </div>
 
-  <button @click="fetchCompletion">fetchCompletion</button>
-  <div>textCompletion:{{ serverCompletionText }}</div>
+
+  <div class="block">
+    <h2>fetch /v1/chat/completions api</h2>
+    <button @click="fetchCompletion">fetch</button>
+    <div>serverCompletionText:<br />{{ serverCompletionText }}</div>
+  </div>
+
 
 </template>
 
 <style scoped>
 div.block {
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 16px;
   padding: 0.5rem;
+  margin-top: 16px;
 }
 </style>
