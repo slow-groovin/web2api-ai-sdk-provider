@@ -1,10 +1,16 @@
+import type { Message } from "@/handler/completion-types.js";
 import { z } from "zod";
 /*
 Messages Type
 */
 export type ProviderType = "moonshot" | "chatgpt" | "grok" | "doubao";
 
-const providerTypeEnum = ["moonshot", "chatgpt", "grok", "doubao"] as const;
+export const providerTypeEnum = [
+  "moonshot",
+  "chatgpt",
+  "grok",
+  "doubao",
+] as const;
 export type RxRegisterType = {
   type: "register";
   content: {
@@ -38,7 +44,7 @@ export type TxChatType = {
   type: "startChat";
   id: string;
   serviceType: ProviderType;
-  content: { role: "user" | "system"; content: string }[];
+  content: Message[];
 };
 
 export type TxErrorType = {

@@ -6,6 +6,7 @@ import type { WSContext } from "hono/ws";
 import type { ProviderType, TxChatType } from "./type.js";
 import { uid } from "radash";
 import { createManagedStream } from "@/lib/stream.js";
+import type { Message } from "@/handler/completion-types.js";
 
 /**
  * Manage the interaction with client(browser extension)
@@ -54,11 +55,11 @@ class ClientManager {
   /**
    * send startChat to client-side
    */
-  startChat(msg: { role: "user" | "system"; content: string }[]) {
+  startChat(msg: Message[]) {
     if (!this.ws || this.state !== 1) {
       throw new Error("ws is not ready, state:" + this.state);
     }
-    const id = uid(16);
+    const id = "chatcmpl-" + uid(16);
     const message: TxChatType = {
       type: "startChat",
       serviceType: "moonshot",
