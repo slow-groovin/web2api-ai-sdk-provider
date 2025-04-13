@@ -1,5 +1,6 @@
 {
   "name": "web2api-server",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "bun run --watch src/index.ts",

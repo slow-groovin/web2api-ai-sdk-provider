@@ -2,7 +2,6 @@ import type { WSContext } from "hono/ws";
 import type {
   RxErrorType,
   RxRegisterType,
-  RxStartChatType,
   RxStreamType,
   RxType,
   TxErrorType,
@@ -19,8 +18,6 @@ export function handleRegister(data: RxRegisterType, ws: WSContext) {
   globalClientManager.setProviders(support);
 }
 
-export function handleStartChat(data: RxStartChatType, ws: WSContext) {}
-
 export function handleStream(data: RxStreamType, ws: WSContext) {
   const { content, id } = data;
   const { textPart, done } = content;
@@ -29,14 +26,10 @@ export function handleStream(data: RxStreamType, ws: WSContext) {
   } else if (textPart)
     globalClientManager.enqueueChatStream(id, content.textPart);
 }
+
 export function handleClientError(data: RxErrorType, ws: WSContext) {
-  console.error("received unknown data:", data);
+  console.error("received client error.", data);
 }
 export function handleError(data: unknown, ws: WSContext) {
   console.error("received unknown data:", data);
-  const msg: TxErrorType = {
-    type: "error",
-    content: "data is unknown",
-  };
-  ws.send(JSON.stringify(msg));
 }

@@ -1,6 +1,3 @@
-import { createBunWebSocket } from "hono/bun";
-import type { ServerWebSocket } from "bun";
-import { Hono, type MiddlewareHandler } from "hono";
 import type { WSEvents } from "hono/ws";
 import { globalClientManager } from "./client-manage.js";
 import { rxTypeSchema } from "./type.js";
@@ -8,11 +5,9 @@ import {
   handleClientError,
   handleError,
   handleRegister,
-  handleStartChat,
   handleStream,
 } from "./handler.js";
 import { isString } from "radash";
-const { upgradeWebSocket, websocket } = createBunWebSocket<ServerWebSocket>();
 
 export const wsHandler: WSEvents = {
   onOpen(evt, ws) {
@@ -25,7 +20,7 @@ export const wsHandler: WSEvents = {
     globalClientManager.setWsContext(ws);
   },
   onMessage(evt, ws) {
-    console.log("evt.data", evt.data, typeof evt.data);
+    // console.debug("evt.data", evt.data, typeof evt.data);
     if (!isString(evt.data)) {
       throw new Error("data is not string.");
     }
@@ -40,9 +35,6 @@ export const wsHandler: WSEvents = {
           break;
         case "stream":
           handleStream(data, ws);
-          break;
-        case "startChat":
-          handleStartChat(data, ws);
           break;
         case "error":
           handleClientError(data, ws);

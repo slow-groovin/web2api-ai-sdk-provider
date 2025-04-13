@@ -10,10 +10,11 @@ import {
 import { z } from "zod";
 import { HTTPException } from "hono/http-exception";
 import { providerTypeEnum, type ProviderType } from "@/ws/type.js";
+import { serverInfo } from "@/variables.js";
 
-export const apiApp = new Hono();
+export const completionAPIHandler = new Hono();
 
-apiApp.post("/chat/completions", async (c) => {
+completionAPIHandler.post("/chat/completions", async (c) => {
   try {
     const req = await c.req.json();
     const parsedReq = ChatCompletionRequestSchema.parse(req);
@@ -24,6 +25,9 @@ apiApp.post("/chat/completions", async (c) => {
     }
     if (!globalClientManager.providers.includes(model as ProviderType)) {
       return c.json(errorsBuilder.modelInvalid(model), 403);
+    }
+    if (globalClientManager.clientVersion !== serverInfo.version) {
+      return c.json(errorsBuilder.versionIncompatible(), 503);
     }
 
     const {
@@ -165,6 +169,17 @@ const errorsBuilder = {
         type: "invalid_request_error",
         param: param,
         code: "bad_request",
+      },
+    };
+  },
+
+  versionIncompatible() {
+    return {
+      error: {
+        message: `serverVersion(${serverInfo.version}) is incompatible with clientVersion(${globalClientManager.clientVersion})`,
+        type: "invalid_request_error",
+        param: null,
+        code: "service_unavailable",
       },
     };
   },

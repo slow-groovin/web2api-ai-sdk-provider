@@ -1,7 +1,8 @@
-import { TxType } from "web2api-server/type";
+import { ProviderType, TxType } from "web2api-server/type";
 import { RxRegisterType, RxStreamType } from "web2api-server/type";
-import { streamText } from "ai";
+import { LanguageModel, streamText } from "ai";
 import { moonshotWebProvider } from "moonshot-web-ai-provider";
+import { clientInfo } from "./variables";
 let ws: WebSocket;
 const logTitle = "[web2api-chrome-ext]";
 /**
@@ -9,14 +10,13 @@ const logTitle = "[web2api-chrome-ext]";
  */
 export async function init() {
   const host = await storage.getItem("local:server-host", {
-    fallback: "ws://localhost:3001",
+    fallback: "localhost:3001",
   });
-  const url = `${host}/ws`;
-  if(ws && ws.readyState===1){
-    ws.close()
+  if (ws && ws.readyState === 1) {
+    ws.close();
   }
-  ws = new WebSocket(url);
-  
+  ws = new WebSocket(`ws://${host}/ws`);
+
   ws.onopen = () => {
     console.log(logTitle, "WebSocket to web2api-server had been opened.");
     // 可以发送初始消息
@@ -24,7 +24,7 @@ export async function init() {
       type: "register",
       content: {
         support: ["moonshot"],
-        version: "0.1.1",
+        version: clientInfo.version,
       },
     };
     ws.send(JSON.stringify(registerMsg));
@@ -40,9 +40,14 @@ export async function init() {
       switch (data.type) {
         case "startChat":
           const { content, id, serviceType } = data;
-          const provider = moonshotWebProvider;
+          const model = providerModelMap[serviceType];
+          if (!model) {
+            throw new Error(
+              "model is not exist for providertype:" + serviceType
+            );
+          }
           const { textStream } = streamText({
-            model: provider.chat(),
+            model: model,
             messages: content,
             onError(e) {},
           });
@@ -86,8 +91,6 @@ export async function init() {
   };
 }
 
-
-
 export async function heartbeat() {
   let failCount = 0;
   const intervalId = setInterval(async () => {
@@ -108,3 +111,7 @@ export async function heartbeat() {
     }
   }, 5000);
 }
+
+const providerModelMap: Partial<Record<ProviderType, LanguageModel>> = {
+  moonshot: moonshotWebProvider.chat(),
+};

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import Index from '../page/Index.vue';
+import Panel from '../page/Panel.vue';
 
 </script>
 
 <template>
-  <Index />
+  <Panel />
 </template>
 
 <style scoped></style>

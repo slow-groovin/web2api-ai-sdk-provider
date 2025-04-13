@@ -28,17 +28,8 @@ export type RxStreamType = {
   };
 };
 
-export type RxStartChatType = {
-  type: "startChat";
-  id: string;
-  content: {};
-};
 export type RxErrorType = TxErrorType;
-export type RxType =
-  | RxRegisterType
-  | RxStreamType
-  | RxStartChatType
-  | RxErrorType;
+export type RxType = RxRegisterType | RxStreamType | RxErrorType;
 
 export type TxChatType = {
   type: "startChat";
@@ -72,11 +63,6 @@ const streamSchema = z.object({
   }),
 });
 
-const startChatSchema = z.object({
-  type: z.literal("startChat"),
-  id: z.string(),
-  content: z.object({}),
-});
 const errorSchema = z.object({
   type: z.literal("error"),
   content: z.string(),
@@ -85,6 +71,5 @@ const errorSchema = z.object({
 export const rxTypeSchema = z.union([
   registerSchema,
   streamSchema,
-  startChatSchema,
   errorSchema,
 ]);

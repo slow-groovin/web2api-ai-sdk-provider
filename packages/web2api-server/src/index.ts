@@ -2,8 +2,8 @@ import { Hono } from "hono";
 import { createBunWebSocket } from "hono/bun";
 import type { ServerWebSocket } from "bun";
 import { wsHandler } from "./ws/ws-entry.js";
-import { apiApp } from "./handler/completion.js";
-import { controlApi } from "./handler/control.js";
+import { completionAPIHandler } from "./handler/completion.js";
+import { controlApiHandler, stateHandler } from "./handler/api.js";
 const { upgradeWebSocket, websocket } = createBunWebSocket<ServerWebSocket>();
 const app = new Hono();
 
@@ -14,11 +14,9 @@ app.get(
   })
 );
 
-app.get("/", async (ctx) => {
-  return ctx.text("ok");
-});
-app.route("/v1", apiApp);
-app.route("/api", controlApi);
+app.get("/", stateHandler);
+app.route("/v1", completionAPIHandler);
+app.route("/api", controlApiHandler);
 export default {
   fetch: app.fetch,
   port: 3001,
