@@ -36,4 +36,5 @@ export function createMoonshotWebProvider(
 /**
  * Default custom provider instance.
  */
-export const moonshotWebProvider = createMoonshotWebProvider();
+export const moonshotWebProvider: MoonshotWebProvider =
+  createMoonshotWebProvider();
