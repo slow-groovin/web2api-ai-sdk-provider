@@ -6,8 +6,10 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "test": "vitest --config vitest.node.config.js --run"
+  },
   "dependencies": {
-    "@ai-sdk/provider-utils": "2.1.6",
     "@wxt-dev/storage": "^1.1.1"
   },
   "devDependencies": {

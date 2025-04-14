@@ -1,13 +1,13 @@
-import { storage } from "@wxt-dev/storage";
-import { Logger, LogLevel } from "./logger";
 import {
+  AISDKError,
   APICallError,
-  LanguageModelV1CallWarning,
-  LanguageModelV1Prompt,
-  LanguageModelV1StreamPart,
+  type LanguageModelV1CallWarning,
+  type LanguageModelV1Prompt,
+  type LanguageModelV1StreamPart,
 } from "@ai-sdk/provider";
-import { KimiStreamRequest } from "./setting";
-import { list, sleep } from "radash";
+import { storage } from "@wxt-dev/storage";
+import { Logger, type LogLevel } from "./logger.js";
+import { type KimiStreamRequest } from "./setting.js";
 export class KimiWebRequest {
   logger: Logger;
 
@@ -19,6 +19,7 @@ export class KimiWebRequest {
     this.logger = new Logger(options.logLevel);
   }
   async stream(prompt: LanguageModelV1Prompt) {
+    // debugger;
     if (!(await this.detectIfReady())) {
       await this.refreshToken();
     }
@@ -30,7 +31,16 @@ export class KimiWebRequest {
    * detect if request is ready by user api
    */
   async detectIfReady() {
-    const { access_token } = await this.getToken();
+    const { access_token, refresh_token } = await this.getToken();
+    if (!access_token && !refresh_token) {
+      throw new APICallError({
+        message: "moonshot web not login. please login first.",
+        url: "https://kimi.moonshot.cn",
+        requestBodyValues: undefined,
+        statusCode: 401,
+        isRetryable: false,
+      });
+    }
     const response = await fetch("https://kimi.moonshot.cn/api/user", {
       headers: {
         accept: "*/*",
@@ -39,12 +49,28 @@ export class KimiWebRequest {
       },
       method: "GET",
     });
+
     if (response.status === 200) {
       this.logger.debug("moonshot web is ready");
       return true;
-    } else {
-      this.logger.debug("moonshot web is NOT ready. Need to refresh token!.");
+    } else if (response.status === 401) {
+      /**
+       * access_token verify failed, return false to try refresh
+       */
+      this.logger.debug(
+        "moonshot access_token may expired. Need to refresh the token."
+      );
       return false;
+    } else {
+      throw new APICallError({
+        message:
+          "moonshot web unpected error. please follow the data to fix it.",
+        url: "https://kimi.moonshot.cn/api",
+        requestBodyValues: undefined,
+        data: await response.json(),
+        statusCode: response.status,
+        isRetryable: false,
+      });
     }
   }
   /**
@@ -56,9 +82,8 @@ export class KimiWebRequest {
     refresh_token: string;
   }> {
     this.logger.debug("refresh token");
-    const pre_refresh_token = await storage.getItem<string>(
-      "local:kimi-refresh_token"
-    );
+
+    const { refresh_token: pre_refresh_token } = await this.getToken();
 
     const response = await globalThis.fetch(
       "https://kimi.moonshot.cn/api/auth/token/refresh",
@@ -71,14 +96,40 @@ export class KimiWebRequest {
         method: "GET",
       }
     );
+    if (response.status === 401) {
+      throw new APICallError({
+        message: "moonshot web login state expired. please login and retry.",
+        url: "https://kimi.moonshot.cn",
+        requestBodyValues: undefined,
+        statusCode: 401,
+        data: await response.json(),
+        isRetryable: false,
+      });
+    } else if (response.status !== 200) {
+      throw new APICallError({
+        message:
+          "moonshot web refresh token failed. please follow the data to fix it.",
+        url: "https://kimi.moonshot.cn/api/auth/token/refresh",
+        requestBodyValues: undefined,
+        statusCode: 401,
+        isRetryable: false,
+      });
+    }
     const rs = await response.json();
     const { refresh_token, access_token } = rs;
-    if (refresh_token && access_token) {
-      await storage.setItems([
-        { key: "local:kimi-refresh_token", value: refresh_token },
-        { key: "local:kimi-access_token", value: access_token },
-      ]);
+    if (!refresh_token || !access_token) {
+      throw new APICallError({
+        message: "moonshot web return no token.",
+        url: "https://kimi.moonshot.cn/api/auth/token/refresh",
+        requestBodyValues: undefined,
+        statusCode: 500,
+        isRetryable: false,
+      });
     }
+    await storage.setItems([
+      { key: "local:kimi-refresh_token", value: refresh_token },
+      { key: "local:kimi-access_token", value: access_token },
+    ]);
     return { refresh_token, access_token };
   }
 
@@ -102,6 +153,14 @@ export class KimiWebRequest {
   }
 
   async getToken() {
+    //@ts-expect-error
+    if (!globalThis?.chrome) {
+      throw new AISDKError({
+        name: "moonshot-web-ai-provider env error",
+        message:
+          "moonshot-web-ai-provider must be called in a browser runtime(such as chrome extension)",
+      });
+    }
     const refresh_token = await storage.getItem("local:kimi-refresh_token");
     const access_token = await storage.getItem("local:kimi-access_token");
     return { refresh_token, access_token };
@@ -120,7 +179,7 @@ export class KimiWebRequest {
     const { prompt, chatId: chatId } = opt;
     const { access_token } = await this.getToken();
 
-    const body = JSON.stringify(prompt2KimiReq(prompt));
+    const body = JSON.stringify(KimiWebRequest.prompt2KimiReq(prompt));
 
     //构建返回对象
     const rawCall = { rawPrompt: prompt, rawSettings: {} };
@@ -148,7 +207,11 @@ export class KimiWebRequest {
     });
 
     if (!response.body) {
-      throw new Error("body is null");
+      throw new APICallError({
+        message: "kimi web request body is null.",
+        requestBodyValues: undefined,
+        url: "",
+      });
     }
 
     const stream = new ReadableStream<LanguageModelV1StreamPart>({
@@ -176,7 +239,7 @@ export class KimiWebRequest {
             const lines = chunk.split("\n");
 
             for (const line of lines) {
-              const parsedPart = parseLine(line);
+              const parsedPart = KimiWebRequest.parseLine(line);
               if (parsedPart) controller.enqueue(parsedPart);
               else {
                 //do nothing
@@ -185,7 +248,20 @@ export class KimiWebRequest {
             }
           }
         } catch (e) {
-          controller.error(e);
+          console.error("kimi web request failed:", e);
+
+          controller.enqueue({
+            type: "finish",
+            finishReason: "error",
+            usage: {
+              completionTokens: 0,
+              promptTokens: 0,
+            },
+          });
+          controller.enqueue({
+            type: "error",
+            error: e,
+          });
         } finally {
           controller.close();
           reader.releaseLock();
@@ -195,47 +271,64 @@ export class KimiWebRequest {
 
     return { stream, rawCall, rawResponse, request };
   }
-}
 
-function prompt2KimiReq(prompt: LanguageModelV1Prompt): KimiStreamRequest {
-  const messages: KimiStreamRequest["messages"] = [];
-  for (const item of prompt) {
-    let str = "";
-    if (Array.isArray(item.content)) {
-      str = item.content.map((c) => (c.type === "text" ? c.text : "")).join("");
-    } else if (typeof item.content === "string") {
-      str = item.content;
-    } else {
-      throw new Error("not support content type:" + item.content);
+  /**
+   * convert LanguageModelV1Prompt to KimiStreamRequest
+   * since moonshot-web only support one message, if there are multi messages in prompt, they will be mered into one.
+   * file/image/tool-cool/... type is not support and will be ignored.
+   * @param prompt
+   * @returns
+   */
+  private static prompt2KimiReq(
+    prompt: LanguageModelV1Prompt
+  ): KimiStreamRequest {
+    const messages: KimiStreamRequest["messages"] = [
+      {
+        role: "user",
+        content: "",
+      },
+    ];
+    for (const item of prompt) {
+      let str = "";
+      if (Array.isArray(item.content)) {
+        str = item.content
+          .filter((c) => c.type === "text")
+          .map((c) => {
+            return c.text;
+          })
+          .join("");
+      } else if (typeof item.content === "string") {
+        str = item.content;
+      } else {
+        throw new Error("not support content type:" + item.content);
+      }
+      messages[0].content += `\nrole:${item.role} context:${str}\n`;
     }
-    messages.push({
-      role: item.role,
-      content: str,
-    });
+
+    return {
+      messages: messages,
+      model: "kimi",
+      use_search: false,
+    };
   }
 
-  return {
-    messages: messages,
-    model: "kimi",
-    use_search: false,
-  };
-}
-function parseLine(
-  line: string,
-  logger?: Logger
-): LanguageModelV1StreamPart | undefined {
-  if (line.startsWith("data:")) {
-    const data = line.substring(5).trim();
-    try {
-      const parsed = JSON.parse(data);
-      if (parsed.event === "cmpl" && parsed.text) {
-        return {
-          type: "text-delta",
-          textDelta: parsed.text,
-        };
+  private static parseLine(
+    line: string,
+    logger?: Logger
+  ): LanguageModelV1StreamPart | undefined {
+    if (line.startsWith("data:")) {
+      const data = line.substring(5).trim();
+      try {
+        const parsed = JSON.parse(data);
+        if (parsed.event === "cmpl" && parsed.text) {
+          return {
+            type: "text-delta",
+            textDelta: parsed.text,
+          };
+        }
+      } catch (e) {
+        logger?.error(e);
       }
-    } catch (e) {
-      logger?.error(e);
     }
   }
 }

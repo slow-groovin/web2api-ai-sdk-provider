@@ -14,7 +14,6 @@
       "name": "moonshot-web-ai-provider",
       "version": "0.0.1",
       "dependencies": {
-        "@ai-sdk/provider-utils": "2.1.6",
         "@wxt-dev/storage": "^1.1.1",
       },
       "devDependencies": {
@@ -90,7 +89,14 @@
     },
     "packages/web2api-server": {
       "name": "web2api-server",
+      "version": "0.1.5",
+      "bin": {
+        "web2api-server": "dist/index-node.js",
+        "run-bun": "src/bun-entry.ts",
+      },
       "dependencies": {
+        "@hono/node-ws": "^1.1.1",
+        "consola": "^3.4.2",
         "hono": "^4.6.19",
         "radash": "^12.1.0",
         "zod": "^3.24.2",
@@ -180,6 +186,10 @@
     "@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.25.2", "", { "os": "win32", "cpu": "ia32" }, "sha512-WRJgsz9un0nqZJ4MfhabxaD9Ft8KioqU3JMinOTvobbX6MOSUigSBlogP8QB3uxpJDsFS6yN+3FDBdqE5lg9kg=="],
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.2", "", { "os": "win32", "cpu": "x64" }, "sha512-kM3HKb16VIXZyIeVrM1ygYmZBKybX8N4p754bw390wGO3Tf2j4L2/WYL+4suWujpgf6GBYs3jv7TyUivdd05JA=="],
+
+    "@hono/node-server": ["@hono/node-server@1.14.1", "", { "peerDependencies": { "hono": "^4" } }, "sha512-vmbuM+HPinjWzPe7FFPWMMQMsbKE9gDPhaH0FFdqbGpkT5lp++tcWDTxwBl5EgS5y6JVgIaCdjeHRfQ4XRBRjQ=="],
+
+    "@hono/node-ws": ["@hono/node-ws@1.1.1", "", { "dependencies": { "ws": "^8.17.0" }, "peerDependencies": { "@hono/node-server": "^1.11.1", "hono": "^4.6.0" } }, "sha512-iFJrAw5GuBTstehBzLY2FyW5rRlXmO3Uwpijpm4Liv75owNP/UjZe3KExsLuEK4w+u+xhvHqOoQUyEKWUvyghw=="],
 
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.0", "", {}, "sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ=="],
 

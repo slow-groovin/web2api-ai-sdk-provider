@@ -3,10 +3,14 @@ import { init } from '../background/communication'
 
 
 const host = ref()
-
-storage.getItem('local:server-host', { fallback: 'localhost:3001' }).then(rs => (host.value = rs) && refreshServerUrl())
 const isServerSecure = ref(false)
-storage.getItem<boolean>('local:server-is-secure', { fallback: false }).then(rs => (isServerSecure.value = rs) && refreshServerUrl())
+
+function getHostConfig() {
+  return Promise.all([
+    storage.getItem('local:server-host', { fallback: 'localhost:3001' }).then(rs => (host.value = rs) && refreshServerUrl()),
+    storage.getItem<boolean>('local:server-is-secure', { fallback: false }).then(rs => (isServerSecure.value = rs) && refreshServerUrl())
+  ])
+}
 
 const serverWsUrl = ref('')
 const serverApiUrl = ref('')
@@ -22,14 +26,14 @@ async function applyServerHost() {
   }
   const currentHost = await storage.getItem('local:server-host')
   if (currentHost === host.value) {
+    await dashFetchServerState()
     return
   }
   await storage.setItem('local:server-host', host.value)
   // re-init
   await init();
   refreshServerUrl()
-  await fetchServerState()
-
+  await dashFetchServerState()
 }
 
 const serverState = ref<{
@@ -38,6 +42,7 @@ const serverState = ref<{
   providers: string,
   clientWebsocketState: number,
 }>()
+
 
 /**
  *readonly CONNECTING: 0;
@@ -55,14 +60,32 @@ const stateMap: Record<number, { color: string, text: string }> = {
 
 async function fetchServerState() {
   if (!serverApiUrl.value) {
-    return
+    return false
   }
   const resp = await fetch(serverApiUrl.value + '/state')
   serverState.value = await resp.json()
+  return serverState.value?.clientWebsocketState === 1
 }
 
+
+async function dashFetchServerState() {
+  let retryCount = 0;
+  let maxRetries = 10
+  while (retryCount < maxRetries) {
+    const result = await fetchServerState();
+    if (result) {
+      break;
+    }
+    retryCount++
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+}
 onMounted(() => {
-  fetchServerState()
+  getHostConfig().then(() => {
+    fetchServerState()
+
+  })
+
   setInterval(fetchServerState, 60000)
 
 })
@@ -95,8 +118,8 @@ onMounted(() => {
           </details>
 
           <div class="btn-group">
-            <button @click="applyServerHost">register</button>
-            <button @click="init" class="btn-icon">
+            <button @click="applyServerHost">apply</button>
+            <button @click="() => init().then(dashFetchServerState)" class="btn-icon">
               <div class="material-symbols--refresh"></div>
             </button>
 
@@ -107,6 +130,14 @@ onMounted(() => {
 
 
         </div>
+
+        <div class="display-item">
+          <span>State: </span>
+          <span class="state-tag"
+            :style="{ backgroundColor: stateMap[serverState?.clientWebsocketState ?? -1].color }">{{
+              stateMap[serverState?.clientWebsocketState ?? -1].text }}</span>
+        </div>
+
         <div id="display-server-block">
           <div class="display-item">
             <span>Server websocket url:</span>
@@ -117,12 +148,7 @@ onMounted(() => {
             <span class="url">{{ serverApiUrl }}</span>
           </div>
 
-          <div class="display-item">
-            <span>State: </span>
-            <span class="state-tag"
-              :style="{ backgroundColor: stateMap[serverState?.clientWebsocketState ?? -1].color }">{{
-                stateMap[serverState?.clientWebsocketState ?? -1].text }}</span>
-          </div>
+
 
           <div class="display-item">
             <span>Client version:</span>

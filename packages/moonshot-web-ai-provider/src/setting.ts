@@ -1,4 +1,4 @@
-import { LogLevel } from "./logger";
+import { type LogLevel } from "./logger.js";
 
 export interface MoonshotWebChatSettings {
   /**

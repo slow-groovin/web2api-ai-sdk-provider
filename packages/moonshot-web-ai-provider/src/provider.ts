@@ -1,5 +1,5 @@
 import { MoonshotWebLanguageModel } from "./model.js";
-import {
+import type {
   MoonshotWebChatSettings,
   MoonshotWebProviderSettings,
 } from "./setting.js";

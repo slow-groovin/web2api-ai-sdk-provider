@@ -1,4 +1,4 @@
-import { ProviderType, TxType } from "web2api-server/type";
+import { ProviderType, RxStreamErrorType, TxType } from "web2api-server/type";
 import { RxRegisterType, RxStreamType } from "web2api-server/type";
 import { LanguageModel, streamText } from "ai";
 import { moonshotWebProvider } from "moonshot-web-ai-provider";
@@ -19,7 +19,7 @@ export async function init() {
 
   ws.onopen = () => {
     console.log(logTitle, "WebSocket to web2api-server had been opened.");
-    // 可以发送初始消息
+    // send a register message
     const registerMsg: RxRegisterType = {
       type: "register",
       content: {
@@ -34,8 +34,6 @@ export async function init() {
   ws.onmessage = async (event) => {
     try {
       const data = JSON.parse(event.data) as TxType;
-
-      // 在这里处理接收到的消息
       // 可以根据消息类型进行不同处理
       switch (data.type) {
         case "startChat":
@@ -49,8 +47,20 @@ export async function init() {
           const { textStream } = streamText({
             model: model,
             messages: content,
-            onError(e) {},
+            onError(e) {
+              ws.send(
+                JSON.stringify({
+                  type: "stream-error",
+                  id,
+                  /**
+                   * ERROR  -> OPENAI sse ERROR
+                   */
+                  content: JSON.stringify(error2OpenaiSseError(e)),
+                } as RxStreamErrorType)
+              );
+            },
           });
+
           for await (const part of textStream) {
             const msg: RxStreamType = {
               type: "stream",
@@ -70,24 +80,24 @@ export async function init() {
           );
           break;
         case "error":
-          console.error("收到错误:", data.content);
+          console.error("receive error from server:", data.content);
           break;
         default:
-          console.log("收到未知类型消息:", data);
+          console.log("receive unknown data from server::", data);
       }
     } catch (error) {
-      console.error("消息解析错误:", error);
+      console.error("unexpect error:", error);
     }
   };
 
   // 连接关闭时的处理
   ws.onclose = (event) => {
-    console.log("WebSocket连接已关闭", event.code, event.reason);
+    console.log("WebSocket closed.", event.code, event.reason);
   };
 
   // 错误处理
   ws.onerror = (error) => {
-    console.error("WebSocket错误:", error);
+    console.error("WebSocket error:", error);
   };
 }
 
@@ -115,3 +125,23 @@ export async function heartbeat() {
 const providerModelMap: Partial<Record<ProviderType, LanguageModel>> = {
   moonshot: moonshotWebProvider.chat(),
 };
+
+function error2OpenaiSseError(e: any): {
+  error: {
+    message: string;
+    type: "server_error";
+    code: string;
+  };
+} {
+  const message = e.message ?? e?.error?.message ?? e.name ?? e?.error?.name;
+  if (!message) {
+    console.warn("informated error:", e);
+  }
+  return {
+    error: {
+      message,
+      type: "server_error",
+      code: "internal_server_error",
+    },
+  };
+}

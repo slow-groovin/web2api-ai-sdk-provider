@@ -9,7 +9,15 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
     "isolatedModules": true,
-    "moduleResolution": "node",
+
+    // "moduleResolution": "node",
+    // "module": "ESNext",
+    // "target": "ES2018",
+
+    "module": "NodeNext",
+    "target": "ESNext",
+    "moduleResolution": "nodenext",
+
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
@@ -17,8 +25,7 @@
     "strict": true,
     "types": ["@types/node", "vitest/globals"],
     "lib": ["dom", "ES2018"],
-    "module": "ESNext",
-    "target": "ES2018",
+
     "stripInternal": true
   },
   "include": ["."],
