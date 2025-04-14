@@ -6,6 +6,7 @@ import {
   handleError,
   handleRegister,
   handleStream,
+  handleStreamError,
 } from "./handler.js";
 import { isString } from "radash";
 
@@ -35,6 +36,9 @@ export const wsHandler: WSEvents = {
           break;
         case "stream":
           handleStream(data, ws);
+          break;
+        case "stream-error":
+          handleStreamError(data, ws);
           break;
         case "error":
           handleClientError(data, ws);

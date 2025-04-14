@@ -27,9 +27,17 @@ export type RxStreamType = {
     done?: boolean;
   };
 };
-
+export type RxStreamErrorType = {
+  type: "stream-error";
+  id: string;
+  content: string;
+};
 export type RxErrorType = TxErrorType;
-export type RxType = RxRegisterType | RxStreamType | RxErrorType;
+export type RxType =
+  | RxRegisterType
+  | RxStreamType
+  | RxErrorType
+  | RxStreamErrorType;
 
 export type TxChatType = {
   type: "startChat";
@@ -63,13 +71,21 @@ const streamSchema = z.object({
   }),
 });
 
+const streamErrorSchema = z.object({
+  type: z.literal("stream-error"),
+  id: z.string(),
+  content: z.string(),
+});
+
 const errorSchema = z.object({
   type: z.literal("error"),
   content: z.string(),
 });
+
 // 根据这些子类型，定义联合类型的 Zod Schema
 export const rxTypeSchema = z.union([
   registerSchema,
   streamSchema,
+  streamErrorSchema,
   errorSchema,
 ]);

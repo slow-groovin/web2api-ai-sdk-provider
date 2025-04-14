@@ -1,0 +1,7 @@
+bruno/
+.bin/
+
+build/
+*.test.*
+build.ts
+*.tgz

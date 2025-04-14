@@ -2,6 +2,7 @@ import type { WSContext } from "hono/ws";
 import type {
   RxErrorType,
   RxRegisterType,
+  RxStreamErrorType,
   RxStreamType,
   RxType,
   TxErrorType,
@@ -21,10 +22,16 @@ export function handleRegister(data: RxRegisterType, ws: WSContext) {
 export function handleStream(data: RxStreamType, ws: WSContext) {
   const { content, id } = data;
   const { textPart, done } = content;
+
   if (done) {
     globalClientManager.enqueueChatStream(id, "", "close");
   } else if (textPart)
     globalClientManager.enqueueChatStream(id, content.textPart);
+}
+
+export function handleStreamError(data: RxStreamErrorType, ws: WSContext) {
+  const { content, id } = data;
+  globalClientManager.enqueueChatStream(id, content, "error");
 }
 
 export function handleClientError(data: RxErrorType, ws: WSContext) {

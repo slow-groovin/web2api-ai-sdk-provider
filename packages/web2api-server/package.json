@@ -1,16 +1,43 @@
 {
   "name": "web2api-server",
-  "version": "0.1.1",
+  "description": "server part of web2api service(1/2)",
+  "keywords": [
+    "ai-provider",
+    "web2api",
+    "moonshot",
+    "chatgpt",
+    "grok",
+    "llm",
+    "api"
+  ],
+  "version": "0.1.8",
   "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "slow-groowin",
+    "url": "https://github.com/slow-groovin"
+  },
+  "homepage": "https://github.com/slow-groovin/web2api-ai-sdk-provider",
+  "repository": {
+    "url": "github:slow-groovin/web2api-ai-sdk-provider",
+    "directory": "packages/web2api-server",
+    "type": "github"
+  },
+  "bin": {
+    "web2api-server": "dist/node-entry.js",
+    "run-bun": "src/bun-entry.ts"
+  },
   "scripts": {
-    "dev": "bun run --watch src/index.ts",
-    "build": "tsc && tsc-alias",
-    "drizzle-push": "tsx node_modules/drizzle-kit/bin.cjs push"
+    "dev": "bun run --watch src/bun-entry.ts",
+    "build": "bun run build.ts",
+    "prepublishOnly": "vitest --run && bun run build"
   },
   "exports": {
     "./type": "./src/ws/type.ts"
   },
   "dependencies": {
+    "@hono/node-ws": "^1.1.1",
+    "consola": "^3.4.2",
     "hono": "^4.6.19",
     "radash": "^12.1.0",
     "zod": "^3.24.2"

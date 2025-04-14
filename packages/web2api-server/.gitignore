@@ -29,5 +29,4 @@ lerna-debug.log*
 
 
 dist/
-
-unstorage.server.ts
+build/

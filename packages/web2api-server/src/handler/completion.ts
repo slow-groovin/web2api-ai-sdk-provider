@@ -11,6 +11,7 @@ import { z } from "zod";
 import { HTTPException } from "hono/http-exception";
 import { providerTypeEnum, type ProviderType } from "@/ws/type.js";
 import { serverInfo } from "@/variables.js";
+import { consola } from "consola/basic";
 
 export const completionAPIHandler = new Hono();
 
@@ -40,12 +41,33 @@ completionAPIHandler.post("/chat/completions", async (c) => {
       const createdAt = Date.now();
       return streamSSE(c, async (stream) => {
         stream.onAbort(() => {
-          console.log("Aborted!");
+          consola.log("Aborted!");
           writer.close();
         });
 
-        for await (const textPart of chatStream) {
-          const streamResp: StreamingResponse = {
+        try {
+          for await (const textPart of chatStream) {
+            const streamResp: StreamingResponse = {
+              id: id,
+              object: "chat.completion.chunk",
+              created: createdAt,
+              model: model,
+              choices: [
+                {
+                  delta: {
+                    content: textPart,
+                    role: "assistant",
+                  },
+                  index: 0,
+                  finish_reason: null,
+                },
+              ],
+            };
+            await stream.writeSSE({
+              data: JSON.stringify(streamResp),
+            });
+          }
+          const stopResponse: StreamingResponse = {
             id: id,
             object: "chat.completion.chunk",
             created: createdAt,
@@ -53,43 +75,29 @@ completionAPIHandler.post("/chat/completions", async (c) => {
             choices: [
               {
                 delta: {
-                  content: textPart,
+                  content: "",
                   role: "assistant",
                 },
                 index: 0,
-                finish_reason: null,
+                finish_reason: "stop",
               },
             ],
+            usage: {
+              completion_tokens: 0,
+              prompt_tokens: 0,
+              total_tokens: 0,
+            },
           };
           await stream.writeSSE({
-            data: JSON.stringify(streamResp),
+            data: JSON.stringify(stopResponse),
           });
+        } catch (e: any) {
+          await stream.writeSSE({
+            data: e,
+          });
+        } finally {
+          stream.close();
         }
-        const stopResponse: StreamingResponse = {
-          id: id,
-          object: "chat.completion.chunk",
-          created: createdAt,
-          model: model,
-          choices: [
-            {
-              delta: {
-                content: "",
-                role: "assistant",
-              },
-              index: 0,
-              finish_reason: "stop",
-            },
-          ],
-          usage: {
-            completion_tokens: 0,
-            prompt_tokens: 0,
-            total_tokens: 0,
-          },
-        };
-        await stream.writeSSE({
-          data: JSON.stringify(stopResponse),
-        });
-        stream.close();
       });
     } else {
       let completeContent = "";
@@ -122,7 +130,6 @@ completionAPIHandler.post("/chat/completions", async (c) => {
       return c.json(response);
     }
   } catch (e) {
-    console.error(e);
     if (e instanceof z.ZodError) {
       return c.json(
         errorsBuilder.requestParam(
@@ -135,6 +142,7 @@ completionAPIHandler.post("/chat/completions", async (c) => {
         400
       );
     }
+    consola.error("unexpect error:", e);
     throw new HTTPException(500, { message: `unexpected error:${e}` });
   }
 });
