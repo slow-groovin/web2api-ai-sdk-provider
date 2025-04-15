@@ -1,12 +1,22 @@
 # web2api-ai-sdk-provider
 
-use the AI website you have logged-in to convert the web request to completion API.
+This project includes:
+
+1. serveral providers to convert website chat to [@ai-sdk](https://github.com/vercel/ai) usage.
+2. a suite to convert providers to openai-compatible http api.
+
+## Note❗❗
+
+1. `<site>-web-ai-provider` can only run in a browser extension environment.
+2. This project is not a crawler, and there is no anti-crawler mechanism.
+3. This project is built for personal learning and testing purposes. You must read the service provider's user agreement before commercial use.
+4. Your account maybe banned if you violate the service provider's user agreement.
 
 ## How to use
 
 Video: TODO
 
-1. install the browser extension in the browser.
+1. Manually install the `web2api-chrome-extension` in the browser.
 2. start the server.
 3. log in to the AI website.
 
@@ -19,37 +29,35 @@ curl -X POST "http://localhost:3000/v1/chat/completions" -H "Content-Type: appli
 
 ## components
 
-### `<websitename>-web-ai-provider`
+### `<site>-web-ai-provider`
 
 include the web request operation as a provider implemented based on the Language Model Specification of `@ai-sdk`
 
 currently supports:
 
-- [moonshot](/packages/moonshot-web-ai-provider/README.md)
+- moonshot: [moonshot-web-ai-provider](/packages/moonshot-web-ai-provider/README.md)
+
+install:
 
 ```sh
 npx jsr add @slow-groovin/moonshot-web-ai-provider
 ```
 
-`<websitename>-web-ai-provider` can only run in a browser extension environment.
+### `web2api-chrome-extension`
 
-### [`web2api-chrome-extension`](/packages/web2api-chrome-extension/README.md)
+[`web2api-chrome-extension` README](/packages/web2api-chrome-extension/README.md)
+communicate with `web2api-server`.
 
-The environment where the provider codes execute.
-Because it cannot expose a service, a bridge `web2api-server` is needed.
+### `web2api-server`
 
-### [`web2api-server`](/packages/web2api-server/README.md)
-
+[`web2api-server` README](/packages/web2api-server/README.md)
 communicate with `web2api-chrome-extension`, and provide an HTTP service for the openai-compatible API `/v1/chat/completion`.
+
+run:
 
 ```sh
 npx web2api-server
 ```
-
-## Note❗❗
-
-1. This project is for personal learning and testing purposes only; please do not use it for commercial purposes.
-2. Your account maybe banned by the website.
 
 ## structure
 
