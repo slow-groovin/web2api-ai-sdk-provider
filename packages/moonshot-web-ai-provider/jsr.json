@@ -1,6 +1,9 @@
 {
   "name": "@slow-groovin/moonshot-web-ai-provider",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "exports": "./src/index.ts",
-  "license": "MIT"
+  "license": "MIT",
+  "publish": {
+    "exclude": ["vitest.*", "**.test.ts"]
+  }
 }

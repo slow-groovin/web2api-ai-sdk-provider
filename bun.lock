@@ -14,6 +14,8 @@
       "name": "moonshot-web-ai-provider",
       "version": "0.0.1",
       "dependencies": {
+        "@ai-sdk/provider": "1.0.7",
+        "@ai-sdk/provider-utils": "2.1.6",
         "@wxt-dev/storage": "^1.1.1",
       },
       "devDependencies": {
@@ -89,9 +91,9 @@
     },
     "packages/web2api-server": {
       "name": "web2api-server",
-      "version": "0.1.5",
+      "version": "0.1.8",
       "bin": {
-        "web2api-server": "dist/index-node.js",
+        "web2api-server": "dist/node-entry.js",
         "run-bun": "src/bun-entry.ts",
       },
       "dependencies": {

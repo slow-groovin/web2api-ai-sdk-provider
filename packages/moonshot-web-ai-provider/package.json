@@ -1,7 +1,13 @@
 {
   "name": "moonshot-web-ai-provider",
-  "version": "0.0.1",
+  "description": "ai-provider for moonshot web",
+  "keywords": [
+    "@ai-sdk",
+    "moonshot"
+  ],
+  "version": "0.0.2",
   "type": "module",
+  "license": "MIT",
   "module": "src/index.ts",
   "exports": {
     ".": "./src/index.ts"
@@ -10,7 +16,9 @@
     "test": "vitest --config vitest.node.config.js --run"
   },
   "dependencies": {
-    "@wxt-dev/storage": "^1.1.1"
+    "@wxt-dev/storage": "^1.1.1",
+    "@ai-sdk/provider": "1.0.7",
+    "@ai-sdk/provider-utils": "2.1.6"
   },
   "devDependencies": {
     "vitest": "^3.1.1"
