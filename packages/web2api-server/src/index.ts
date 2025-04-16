@@ -4,7 +4,7 @@ import { controlApiHandler, stateHandler } from "./handler/api.js";
 import { logger } from "hono/logger";
 import { except } from "hono/combine";
 // ESM
-import { consola } from "consola/basic";
+import { consola, LogLevels } from "consola/basic";
 export const app = new Hono();
 
 app.use(
@@ -21,4 +21,9 @@ app.route("/api", controlApiHandler);
 
 // --- Runtime Detection ---
 const isBun = typeof process.versions?.bun !== "undefined";
-consola.debug("[runtime]", isBun ? "bun" : "node");
+
+//cannot set CONSOLA_LEVEL to verbose(other levels can be set using number)
+if (process.env.CONSOLA_LEVEL === "verbose") {
+  consola.level = LogLevels.verbose;
+}
+consola.debug("runtime:", isBun ? "bun" : "node", "  loglevel:", consola.level);

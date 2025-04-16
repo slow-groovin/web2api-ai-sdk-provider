@@ -10,7 +10,7 @@
     "llm",
     "api"
   ],
-  "version": "0.1.8",
+  "version": "0.2.0",
   "type": "module",
   "license": "MIT",
   "author": {
@@ -33,7 +33,7 @@
     "prepublishOnly": "vitest --run && bun run build"
   },
   "exports": {
-    "./type": "./src/ws/type.ts"
+    "./type": "./src/shared-types.d.ts"
   },
   "dependencies": {
     "@hono/node-ws": "^1.1.1",

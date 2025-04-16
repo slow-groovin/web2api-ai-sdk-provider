@@ -1,8 +1,9 @@
-import { ProviderType, RxStreamErrorType, TxType } from "web2api-server/type";
+import { ModelId, RxStreamErrorType, TxType } from "web2api-server/type";
 import { RxRegisterType, RxStreamType } from "web2api-server/type";
 import { LanguageModel, streamText } from "ai";
 import { moonshotWebProvider } from "moonshot-web-ai-provider";
-import { clientInfo } from "./variables";
+import { clientInfo, supportModels } from "./variables";
+import { createModel } from "./model";
 let ws: WebSocket;
 const logTitle = "[web2api-chrome-ext]";
 /**
@@ -23,7 +24,7 @@ export async function init() {
     const registerMsg: RxRegisterType = {
       type: "register",
       content: {
-        support: ["moonshot"],
+        support: supportModels,
         version: clientInfo.version,
       },
     };
@@ -37,15 +38,13 @@ export async function init() {
       // 可以根据消息类型进行不同处理
       switch (data.type) {
         case "startChat":
-          const { content, id, serviceType } = data;
-          const model = providerModelMap[serviceType];
-          if (!model) {
-            throw new Error(
-              "model is not exist for providertype:" + serviceType
-            );
+          const { content, id, model, options } = data;
+          const chatModel = createModel(model, options);
+          if (!chatModel) {
+            throw new Error("model is not exist for model id:" + model);
           }
           const { textStream } = streamText({
-            model: model,
+            model: chatModel,
             messages: content,
             onError(e) {
               ws.send(
@@ -60,6 +59,10 @@ export async function init() {
               );
             },
           });
+          /*
+           * reasoning will be deserted for now, because ai-sdk has no reasoning stream implemention now, 
+             which lead to that the completion api of server cannot not stream reasoning before cmpl part.
+           */
 
           for await (const part of textStream) {
             const msg: RxStreamType = {
@@ -121,10 +124,6 @@ export async function heartbeat() {
     }
   }, 5000);
 }
-
-const providerModelMap: Partial<Record<ProviderType, LanguageModel>> = {
-  moonshot: moonshotWebProvider.chat(),
-};
 
 function error2OpenaiSseError(e: any): {
   error: {

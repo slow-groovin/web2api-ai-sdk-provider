@@ -7,16 +7,21 @@ import {
 } from "@ai-sdk/provider";
 import { storage } from "@wxt-dev/storage";
 import { Logger, type LogLevel } from "./logger.js";
-import { type KimiStreamRequest } from "./setting.js";
+import {
+  MoonshotWebChatSettings,
+  MoonshotWebModelId,
+  type KimiStreamRequest,
+} from "./setting.js";
 export class KimiWebRequest {
   logger: Logger;
 
   constructor(
-    options: { logLevel?: LogLevel } = {
+    private modelId: MoonshotWebModelId,
+    private settings: MoonshotWebChatSettings = {
       logLevel: "INFO",
     }
   ) {
-    this.logger = new Logger(options.logLevel);
+    this.logger = new Logger(settings.logLevel);
   }
   async stream(prompt: LanguageModelV1Prompt) {
     // debugger;
@@ -179,7 +184,9 @@ export class KimiWebRequest {
     const { prompt, chatId: chatId } = opt;
     const { access_token } = await this.getToken();
 
-    const body = JSON.stringify(KimiWebRequest.prompt2KimiReq(prompt));
+    const body = JSON.stringify(
+      KimiWebRequest.prompt2KimiReq(this.modelId, prompt, this.settings)
+    );
 
     //构建返回对象
     const rawCall = { rawPrompt: prompt, rawSettings: {} };
@@ -280,7 +287,9 @@ export class KimiWebRequest {
    * @returns
    */
   private static prompt2KimiReq(
-    prompt: LanguageModelV1Prompt
+    modelId: MoonshotWebModelId,
+    prompt: LanguageModelV1Prompt,
+    settings: MoonshotWebChatSettings
   ): KimiStreamRequest {
     const messages: KimiStreamRequest["messages"] = [
       {
@@ -307,8 +316,8 @@ export class KimiWebRequest {
 
     return {
       messages: messages,
-      model: "kimi",
-      use_search: false,
+      model: modelId,
+      use_search: settings.use_search ?? false,
     };
   }
 
@@ -323,6 +332,11 @@ export class KimiWebRequest {
         if (parsed.event === "cmpl" && parsed.text) {
           return {
             type: "text-delta",
+            textDelta: parsed.text,
+          };
+        } else if (parsed.event === "k1" && parsed.text) {
+          return {
+            type: "reasoning",
             textDelta: parsed.text,
           };
         }

@@ -9,22 +9,32 @@ import {
 } from "./completion-types.js";
 import { z } from "zod";
 import { HTTPException } from "hono/http-exception";
-import { providerTypeEnum, type ProviderType } from "@/ws/type.js";
+import { type ModelId } from "@/ws/type.js";
 import { serverInfo } from "@/variables.js";
-import { consola } from "consola/basic";
-
+import { consola, LogLevels } from "consola/basic";
+import { LogLevels as L2 } from "consola";
 export const completionAPIHandler = new Hono();
 
+/**
+  reasoning will be deserted for now, because ai-sdk has no reasoning stream implemention now, 
+  which lead to that the completion api of server cannot not stream reasoning before cmpl part.
+*/
 completionAPIHandler.post("/chat/completions", async (c) => {
   try {
     const req = await c.req.json();
     const parsedReq = ChatCompletionRequestSchema.parse(req);
 
-    const { model, messages, stream: useStream = false } = parsedReq;
+    consola.verbose("/chat/completions request param:", parsedReq);
+    const {
+      model,
+      messages,
+      stream: useStream = false,
+      additional_parameters,
+    } = parsedReq;
     if (globalClientManager.state !== 1) {
       return c.json(errorsBuilder.notReady(), 503);
     }
-    if (!globalClientManager.providers.includes(model as ProviderType)) {
+    if (!globalClientManager.provideModels.includes(model as ModelId)) {
       return c.json(errorsBuilder.modelInvalid(model), 403);
     }
     if (globalClientManager.clientVersion !== serverInfo.version) {
@@ -35,7 +45,7 @@ completionAPIHandler.post("/chat/completions", async (c) => {
       stream: chatStream,
       writer,
       id,
-    } = globalClientManager.startChat(messages);
+    } = globalClientManager.startChat(model, messages, additional_parameters);
 
     if (useStream) {
       const createdAt = Date.now();
@@ -143,7 +153,7 @@ completionAPIHandler.post("/chat/completions", async (c) => {
       );
     }
     consola.error("unexpect error:", e);
-    throw new HTTPException(500, { message: `unexpected error:${e}` });
+    return c.json(errorsBuilder.unknownError("unexpect error"), 500);
   }
 });
 
@@ -152,7 +162,7 @@ const errorsBuilder = {
     return {
       error: {
         // prettier-ignore
-        message: `The model \`${model}\` does not exist. support: ${globalClientManager.providers}`,
+        message: `The model \`${model}\` does not exist. support: ${JSON.stringify(globalClientManager.provideModels)}`,
         type: "invalid_request_error",
         param: null,
         code: "model_not_found",
@@ -188,6 +198,17 @@ const errorsBuilder = {
         type: "invalid_request_error",
         param: null,
         code: "service_unavailable",
+      },
+    };
+  },
+
+  unknownError(message?: string) {
+    return {
+      error: {
+        message: message,
+        type: "unknown_error",
+        param: null,
+        code: "internal_service_error",
       },
     };
   },

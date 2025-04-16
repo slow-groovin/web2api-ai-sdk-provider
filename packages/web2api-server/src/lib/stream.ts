@@ -1,23 +1,23 @@
 import { consola } from "consola/basic";
 
 export function createManagedStream() {
-  let streamController: ReadableStreamDefaultController<any> | undefined; // 在外部作用域声明变量以捕获 controller
+  let streamController: ReadableStreamDefaultController<any> | undefined; // Declare variable in outer scope to capture controller
 
   const stream = new ReadableStream({
     start(controller) {
-      // 当流被构造时，捕获 controller
+      // Capture controller when stream is constructed
       streamController = controller;
       consola.verbose("Stream started.");
     },
 
     cancel(reason) {
-      // 可选：当消费者取消流时调用。
+      // Optional: Called when consumer cancels the stream.
       // console.log(`Stream cancelled. Reason: ${reason}`)
-      streamController = undefined; // 清理引用
+      streamController = undefined; // Clean up reference
     },
   });
 
-  // 封装控制逻辑，避免直接暴露 controller
+  // Encapsulate control logic to avoid directly exposing the controller
   const writer = {
     write: (chunk: any) => {
       if (!streamController) {
@@ -41,13 +41,26 @@ export function createManagedStream() {
         return;
       }
       try {
-        // 关闭流
         consola.verbose("Writer: Closing the stream.");
         streamController.close();
-        streamController = undefined; // 清理引用
+        streamController = undefined;
       } catch (error) {
         consola.error("Writer: Error closing stream:", error);
       }
+    },
+
+    /**
+     * try to close the stream, ignore the error
+     * @returns
+     */
+    tryClose: () => {
+      if (!streamController) {
+        return;
+      }
+      try {
+        streamController.close();
+        streamController = undefined;
+      } catch (error) {}
     },
     error: (err: any) => {
       if (!streamController) {
@@ -57,10 +70,10 @@ export function createManagedStream() {
         return;
       }
       try {
-        // 使流出错
+        // Make the stream error
         consola.debug("Writer: Erroring the stream:", err);
         streamController.error(err);
-        streamController = undefined; // 清理引用
+        streamController = undefined; // Clean up reference
       } catch (error) {
         consola.error("Writer: Error while trying to error the stream:", error);
       }

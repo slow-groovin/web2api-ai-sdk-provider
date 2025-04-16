@@ -10,7 +10,7 @@ import { sleep } from "radash";
 describe("notChromeExtentionEnv", () => {
   it("should throw an env error in node/bun/edge runtime", async () => {
     const throwError = async () => {
-      const req = new KimiWebRequest();
+      const req = new KimiWebRequest("kimi");
       const ready = await req.detectIfReady();
       return ready;
     };
@@ -25,7 +25,7 @@ describe("stream", () => {
    * if no token stored, will throw a error to hint login
    */
   it("no token", async () => {
-    const request = new KimiWebRequest();
+    const request = new KimiWebRequest("kimi");
 
     const spy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
       json: () =>
@@ -56,7 +56,7 @@ describe("stream", () => {
   });
 
   it("refresh failed: response 401", async () => {
-    const request = new KimiWebRequest();
+    const request = new KimiWebRequest("kimi");
 
     //fetch will be called twice
     const spy = vi.spyOn(global, "fetch").mockResolvedValue({
@@ -94,25 +94,31 @@ describe("prompt2KimiReq", () => {
   it("should output match expected", () => {
     //@ts-expect-error
     const prompt2KimiReq = KimiWebRequest.prompt2KimiReq;
-    const rs = prompt2KimiReq([
+    const rs = prompt2KimiReq(
+      "kimi",
+      [
+        {
+          role: "system",
+          content: "follow the user's instruction",
+        },
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "give a random setence.",
+            },
+            {
+              type: "text",
+              text: "it should be no more than 200 words.",
+            },
+          ],
+        },
+      ],
       {
-        role: "system",
-        content: "follow the user's instruction",
-      },
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: "give a random setence.",
-          },
-          {
-            type: "text",
-            text: "it should be no more than 200 words.",
-          },
-        ],
-      },
-    ]);
+        use_search: true,
+      }
+    );
     expect(rs).not.toBeNull();
     expect(rs.messages).toHaveLength(1);
     expect(rs.messages[0].role).toBe("user");
@@ -122,5 +128,7 @@ describe("prompt2KimiReq", () => {
         "\n" +
         "role:user context:give a random setence.it should be no more than 200 words.\n"
     );
+    expect(rs.model).toBe("kimi");
+    expect(rs.use_search).toBe(true);
   });
 });

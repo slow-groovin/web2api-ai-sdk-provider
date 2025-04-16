@@ -11,7 +11,7 @@ import {
   APICallError,
   AISDKError,
 } from "@ai-sdk/provider";
-import type { MoonshotWebChatSettings } from "./setting.js";
+import type { MoonshotWebChatSettings, MoonshotWebModelId } from "./setting.js";
 import { KimiWebRequest } from "./request.js";
 
 export class MoonshotWebLanguageModel implements LanguageModelV1 {
@@ -20,11 +20,11 @@ export class MoonshotWebLanguageModel implements LanguageModelV1 {
   defaultObjectGenerationMode: LanguageModelV1ObjectGenerationMode = undefined;
   supportsImageUrls?: boolean | undefined = false;
   supportsStructuredOutputs?: boolean | undefined = false;
-  /**
-   * need no modelId
-   */
-  modelId: string = "";
-  constructor(private settings?: MoonshotWebChatSettings) {
+
+  constructor(
+    public readonly modelId: MoonshotWebModelId,
+    private settings?: MoonshotWebChatSettings
+  ) {
     //donothing
   }
   supportsUrl?(url: URL): boolean {
@@ -46,14 +46,13 @@ export class MoonshotWebLanguageModel implements LanguageModelV1 {
     logprobs?: LanguageModelV1LogProbs;
   }> {
     const { prompt } = options;
-    const kimiReq = new KimiWebRequest({
-      logLevel: this.settings?.logLevel,
-    });
+    const kimiReq = new KimiWebRequest(this.modelId, this.settings);
     let text = "";
     const { stream, rawCall, rawResponse, request, warnings } =
       await kimiReq.stream(prompt);
     const reader = stream.getReader();
     let finishReason: LanguageModelV1FinishReason = "unknown";
+    let reasonning = "";
     let promptTokens = 0;
     let completionTokens = 0;
 
@@ -66,6 +65,8 @@ export class MoonshotWebLanguageModel implements LanguageModelV1 {
         finishReason = value.finishReason;
       } else if (value.type === "text-delta") {
         text += value.textDelta;
+      } else if (value.type === "reasoning") {
+        reasonning += value.textDelta;
       } else if (value.type === "error") {
         throw value.error;
       }
@@ -74,11 +75,12 @@ export class MoonshotWebLanguageModel implements LanguageModelV1 {
     return {
       text: text,
       finishReason: finishReason,
+      reasoning: reasonning ? reasonning : undefined,
       usage: { promptTokens: promptTokens, completionTokens: completionTokens },
       rawCall: rawCall,
       rawResponse: rawResponse,
       request: request,
-      response: { modelId: "moonshot-web" },
+      response: { modelId: this.modelId },
       warnings: warnings,
     };
   }
@@ -93,10 +95,7 @@ export class MoonshotWebLanguageModel implements LanguageModelV1 {
     // console.log("options", options);
     try {
       const { prompt } = options;
-      const kimiReq = new KimiWebRequest({
-        logLevel: this.settings?.logLevel,
-      });
-
+      const kimiReq = new KimiWebRequest(this.modelId, this.settings);
       return kimiReq.stream(prompt);
     } catch (e) {
       console.error("e", e);

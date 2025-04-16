@@ -5,7 +5,7 @@
     "@ai-sdk",
     "moonshot"
   ],
-  "version": "0.0.2",
+  "version": "0.2.0",
   "type": "module",
   "license": "MIT",
   "module": "src/index.ts",
@@ -13,7 +13,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "vitest --config vitest.node.config.js --run"
+    "test": "vitest --config vitest.node.config.js --run",
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "@wxt-dev/storage": "^1.1.1",

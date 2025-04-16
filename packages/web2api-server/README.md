@@ -14,36 +14,68 @@ npx web2api-server@latest
 
 openai-compatible api
 
+not supported params:
+
+- `top_p`
+- `top_k`
+- `temperature`
+- ...
+
 support params:
 
 - `stream`
 - `model`
 - `messages`
 
-### GET `/`/ `/api/state`
+there are some addtional params for web-special feature:
+
+- `use_search`
+
+example request body:
+
+```json
+{
+  "stream": true,
+  "model": "xxx",
+  "messages": [
+    {
+      "role": "user",
+      "content": "hello?"
+    }
+  ],
+  "additional_parameters": {
+    "use_search": true
+  }
+}
+```
+
+### GET `/` or `/api/state`
 
 response sample:
 
 ```json
 {
-  "clientVersion": "0.1",
-  "serverVersion": "0.1",
-  "providers": ["moonshot", "chatgpt"],
+  "clientVersion": "0.2",
+  "serverVersion": "0.2",
+  "supportModels": ["kimi", "gpt-4o-mini"],
   "clientWebsocketState": 1
 }
 ```
 
 > The client refers to the `web2api-chrome-extension` part.
 
-- clientVersion: the connected client's version ( `Major version`.`Minor version`)
-- serverVersion: server's version
-- providers: the connected client's supported providers
-- clientWebsocketState: readyState of the websocket with client
+- `clientVersion`: the connected client's version ( `Major version`.`Minor version`)
+- `serverVersion`: server's version
+- `supportModels`: the connected client's supported models
+- `clientWebsocketState`: readyState of the websocket with client
 
 ### GET `/serverFullVersion`
 
 response sample:
-`0.1.8`
+
+```json
+"0.2.0"
+```
 
 ## dev
 

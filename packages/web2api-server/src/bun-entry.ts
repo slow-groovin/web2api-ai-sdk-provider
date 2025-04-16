@@ -18,7 +18,7 @@ Bun.serve({
   fetch: app.fetch,
 });
 consola.box(
-  `web2api-servers [bun] ${serverInfo.fullVersion}`,
+  `web2api-servers  ${serverInfo.fullVersion}  [bun]`,
   "\nServer running on port",
   process.env.PORT ?? 3000
 );

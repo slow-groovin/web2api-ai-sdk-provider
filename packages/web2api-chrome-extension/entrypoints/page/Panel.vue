@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { init } from '../background/communication'
+import { ServerState } from '../../../web2api-server/src/handler/api';
+import { supportModels } from '../background/variables';
 
 
 const host = ref()
@@ -36,12 +38,7 @@ async function applyServerHost() {
   await dashFetchServerState()
 }
 
-const serverState = ref<{
-  clientVersion: string,
-  serverVersion: string,
-  providers: string,
-  clientWebsocketState: number,
-}>()
+const serverState = ref<ServerState>()
 
 
 /**
@@ -160,8 +157,8 @@ onMounted(() => {
           </div>
 
           <div class="display-item">
-            <span>Providers:</span>
-            <span>{{ serverState?.providers }}</span>
+            <span>support models:</span>
+            <span>{{ serverState?.supportModels }}</span>
           </div>
           <div class="btn-group">
             <button @click="fetchServerState" class="btn-icon">

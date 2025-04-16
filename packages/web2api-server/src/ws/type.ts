@@ -3,19 +3,19 @@ import { z } from "zod";
 /*
 Messages Type
 */
-export type ProviderType = "moonshot" | "chatgpt" | "grok" | "doubao";
+export type ModelId =
+  | "kimi"
+  | "k1"
+  | "chatgpt"
+  | "grok"
+  | "doubao"
+  | (string & {});
 
-export const providerTypeEnum = [
-  "moonshot",
-  "chatgpt",
-  "grok",
-  "doubao",
-] as const;
 export type RxRegisterType = {
   type: "register";
   content: {
     version: string;
-    support: ProviderType[];
+    support: ModelId[];
   };
 };
 
@@ -42,8 +42,9 @@ export type RxType =
 export type TxChatType = {
   type: "startChat";
   id: string;
-  serviceType: ProviderType;
+  model: ModelId;
   content: Message[];
+  options?: Record<string, any>;
 };
 
 export type TxErrorType = {
@@ -58,7 +59,7 @@ const registerSchema = z.object({
   type: z.literal("register"),
   content: z.object({
     version: z.string(),
-    support: z.array(z.enum(providerTypeEnum)), // 假设 ProviderType[] 是一个字符串数组
+    support: z.array(z.string()), // 假设 ProviderType[] 是一个字符串数组
   }),
 });
 

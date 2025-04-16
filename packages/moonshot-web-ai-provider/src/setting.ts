@@ -1,14 +1,14 @@
 import { type LogLevel } from "./logger.js";
 
-export interface MoonshotWebChatSettings {
+export type MoonshotWebModelId = "kimi" | "k1" | (string & {});
+export type MoonshotWebChatSettings = {
   /**
 Whether to inject a safety prompt before all conversations.
 
 Defaults to `false`.
    */
-  safePrompt?: boolean;
-  logLevel?: LogLevel;
-}
+  use_search?: boolean;
+} & MoonshotWebProviderSettings;
 
 // optional settings for the provider
 export interface MoonshotWebProviderSettings {
@@ -20,7 +20,7 @@ export type KimiStreamRequest = {
   extend?: {
     sidebar: true | false;
   };
-  model: "kimi" | "k1";
+  model: MoonshotWebModelId;
   use_search: boolean;
   messages: {
     role: "user" | "tool" | "system" | "assistant";

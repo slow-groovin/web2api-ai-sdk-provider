@@ -8,6 +8,7 @@ import type {
   TxErrorType,
 } from "./type.js";
 import { globalClientManager } from "./client-manage.js";
+import consola from "consola/basic";
 
 /*
  * Handlers for handling the message through ws from client
@@ -15,8 +16,11 @@ import { globalClientManager } from "./client-manage.js";
 
 export function handleRegister(data: RxRegisterType, ws: WSContext) {
   const { support, version } = data.content;
+  consola.debug(
+    `[client] registered, clientVersion:${version}, support:${support}`
+  );
   globalClientManager.setClientVersion(version);
-  globalClientManager.setProviders(support);
+  globalClientManager.setProvideModels(support);
 }
 
 export function handleStream(data: RxStreamType, ws: WSContext) {

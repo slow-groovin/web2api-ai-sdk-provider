@@ -1,9 +1,11 @@
-import { providerTypeEnum, type ProviderType } from "@/ws/type.js";
+import { type ModelId } from "@/ws/type.js";
 import { z } from "zod";
 
-// TypeScript type definitions for the request body
+/**
+ * openai-compatible API request params
+ */
 export interface ChatCompletionRequest {
-  model: ProviderType;
+  model: ModelId;
   messages: Message[]; // An array of messages representing the conversation
   temperature?: number; // Optional, controls the randomness of the output, default is 1
   max_tokens?: number; // Optional, the maximum number of tokens to generate
@@ -11,6 +13,13 @@ export interface ChatCompletionRequest {
   frequency_penalty?: number; // Optional, penalizes the model for frequent tokens
   presence_penalty?: number; // Optional, penalizes the model for mentioning new topics
   stream?: boolean; // Optional, whether to stream the response incrementally
+}
+
+/**
+ * Supplement to OpenAI compatible API interface parameters, for additional usage
+ */
+export interface AddtionalChatCompletionRequestParams {
+  use_search?: boolean; //enable search of llm
 }
 
 // Message type definition (each message in the conversation)
@@ -87,4 +96,10 @@ export const ChatCompletionRequestSchema = z.object({
   frequency_penalty: z.number().optional(), // Optional, a number
   presence_penalty: z.number().optional(), // Optional, a number
   stream: z.boolean().optional(), // Optional, a boolean flag for streaming
+
+  additional_parameters: z
+    .object({
+      use_search: z.boolean().optional(),
+    })
+    .optional(),
 });

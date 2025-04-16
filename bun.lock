@@ -12,7 +12,7 @@
     },
     "packages/moonshot-web-ai-provider": {
       "name": "moonshot-web-ai-provider",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "dependencies": {
         "@ai-sdk/provider": "1.0.7",
         "@ai-sdk/provider-utils": "2.1.6",

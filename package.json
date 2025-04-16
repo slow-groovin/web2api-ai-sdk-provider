@@ -6,11 +6,15 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "install": ""
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "packageManager": "bun"
 }

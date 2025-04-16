@@ -3,10 +3,13 @@
  */
 
 import type { WSContext } from "hono/ws";
-import type { ProviderType, TxChatType } from "./type.js";
+import type { ModelId, TxChatType } from "./type.js";
 import { uid } from "radash";
 import { createManagedStream } from "@/lib/stream.js";
-import type { Message } from "@/handler/completion-types.js";
+import type {
+  AddtionalChatCompletionRequestParams,
+  Message,
+} from "@/handler/completion-types.js";
 
 /**
  * Manage the interaction with client(browser extension)
@@ -17,10 +20,10 @@ class ClientManager {
     string,
     ReturnType<typeof createManagedStream>["writer"]
   > = new Map();
-  #providers: ProviderType[];
+  #provideModels: ModelId[];
   #clientVersion: string = "";
   constructor() {
-    this.#providers = [];
+    this.#provideModels = [];
   }
   setWsContext(ws: WSContext) {
     if (this.ws && this.ws.readyState === 1) {
@@ -33,11 +36,11 @@ class ClientManager {
     return this.ws?.readyState ?? -1; // -1 means not connect
   }
 
-  setProviders(providers: ProviderType[]) {
-    this.#providers = providers;
+  setProvideModels(provideModels: ModelId[]) {
+    this.#provideModels = provideModels;
   }
-  get providers() {
-    return this.#providers;
+  get provideModels() {
+    return this.#provideModels;
   }
 
   setClientVersion(version: string) {
@@ -55,21 +58,32 @@ class ClientManager {
   /**
    * send startChat to client-side
    */
-  startChat(msg: Message[]) {
+  startChat(
+    model: ModelId,
+    msg: Message[],
+    addtionalParameter?: AddtionalChatCompletionRequestParams
+  ) {
     if (!this.ws || this.state !== 1) {
       throw new Error("ws is not ready, state:" + this.state);
     }
     const id = "chatcmpl-" + uid(16);
     const message: TxChatType = {
       type: "startChat",
-      serviceType: "moonshot",
+      model: model,
       id: id,
       content: msg,
+      options: addtionalParameter,
     };
 
     this.ws.send(JSON.stringify(message));
     const { stream, writer } = createManagedStream();
     this.writersMap.set(id, writer);
+
+    //auto delete after 5 mins
+    setTimeout(() => {
+      writer.tryClose();
+      this.writersMap.delete(id);
+    }, 300_000);
     return { id, stream, writer };
   }
 
@@ -83,6 +97,7 @@ class ClientManager {
     }
     if (flag === "close") {
       writer.close();
+      this.writersMap.delete(id);
     } else if (flag === "error") {
       writer.error(part);
     } else {
