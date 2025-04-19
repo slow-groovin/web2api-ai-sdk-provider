@@ -5,14 +5,14 @@ This project includes:
 1. serveral providers to convert website chat to [@ai-sdk](https://github.com/vercel/ai) usage.
 2. a suite to convert providers to openai-compatible http api.
 
-## Note❗❗
+> [!NOTE]
+>
+> 1. `<site>-web-ai-provider` can only run in a browser extension environment.
+> 2. This project is not a crawler, and there is no anti-crawler mechanism.
+> 3. This project is built for personal learning and testing purposes. Please DO NOT use it for commercial purpose. The author is not responsible for the usage of this repository nor endorses it.
+> 4. Your account maybe banned if you violate the service provider's user agreement.
 
-1. `<site>-web-ai-provider` can only run in a browser extension environment.
-2. This project is not a crawler, and there is no anti-crawler mechanism.
-3. This project is built for personal learning and testing purposes. You must read the service provider's user agreement before commercial use.
-4. Your account maybe banned if you violate the service provider's user agreement.
-
-## How to use
+## 🛠 How to use
 
 Video: TODO
 
@@ -36,11 +36,14 @@ include the web request operation as a provider implemented based on the Languag
 currently supports:
 
 - moonshot: [moonshot-web-ai-provider](/packages/moonshot-web-ai-provider/README.md)
+- chatgpt: [chatgpt-web-ai-provider](/packages/chatgpt-web-ai-provider/README.md)
 
 install:
 
 ```sh
 npx jsr add @slow-groovin/moonshot-web-ai-provider
+
+npx jsr add @slow-groovin/chatgpt-web-ai-provider
 ```
 
 ### `web2api-chrome-extension`

@@ -10,9 +10,20 @@
         "typescript": "^5",
       },
     },
+    "packages/chatgpt-web-ai-provider": {
+      "name": "chatgpt-web-ai-provider",
+      "version": "0.1.0",
+      "dependencies": {
+        "@ai-sdk/provider": "1.0.7",
+        "@ai-sdk/provider-utils": "2.1.6",
+      },
+      "devDependencies": {
+        "vitest": "^3.1.1",
+      },
+    },
     "packages/moonshot-web-ai-provider": {
       "name": "moonshot-web-ai-provider",
-      "version": "0.0.2",
+      "version": "0.2.0",
       "dependencies": {
         "@ai-sdk/provider": "1.0.7",
         "@ai-sdk/provider-utils": "2.1.6",
@@ -30,6 +41,8 @@
         "@slow-groovin/openai-compatible": "workspace:*",
         "@vueuse/core": "^13.1.0",
         "ai": "^4.2.9",
+        "chatgpt-web-ai-provider": "workspace:*",
+        "js-sha3": "^0.9.3",
         "moonshot-web-ai-provider": "workspace:*",
         "radash": "^12.1.0",
         "vue": "^3.5.12",
@@ -72,7 +85,7 @@
     },
     "packages/web2api-chrome-extension": {
       "name": "web2api-chrome-extension",
-      "version": "0.0.1",
+      "version": "0.2.0",
       "dependencies": {
         "@vueuse/core": "^13.1.0",
         "ai": "^4.2.9",
@@ -91,7 +104,7 @@
     },
     "packages/web2api-server": {
       "name": "web2api-server",
-      "version": "0.1.8",
+      "version": "0.2.0",
       "bin": {
         "web2api-server": "dist/node-entry.js",
         "run-bun": "src/bun-entry.ts",
@@ -425,6 +438,8 @@
 
     "chalk": ["chalk@5.4.1", "", {}, "sha512-zgVZuo2WcZgfUEmsn6eO3kINexW8RAE4maiQ8QNs8CtpPCSyMiYsULR3HQYkm3w8FIA3SberyMJMSldGsW+U3w=="],
 
+    "chatgpt-web-ai-provider": ["chatgpt-web-ai-provider@workspace:packages/chatgpt-web-ai-provider"],
+
     "check-error": ["check-error@2.1.1", "", {}, "sha512-OAlb+T7V4Op9OwdkjmguYRqncdlx5JiofwOAUkmTF+jNdHwzTaTs4sRAGpzLF3oOz5xAyDGrPgeIDFQmDOTiJw=="],
 
     "chokidar": ["chokidar@4.0.3", "", { "dependencies": { "readdirp": "^4.0.1" } }, "sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA=="],
@@ -706,6 +721,8 @@
     "isobject": ["isobject@3.0.1", "", {}, "sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg=="],
 
     "jiti": ["jiti@2.4.2", "", { "bin": { "jiti": "lib/jiti-cli.mjs" } }, "sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A=="],
+
+    "js-sha3": ["js-sha3@0.9.3", "", {}, "sha512-BcJPCQeLg6WjEx3FE591wVAevlli8lxsxm9/FzV4HXkV49TmBH38Yvrpce6fjbADGMKFrBMGTqrVz3qPIZ88Gg=="],
 
     "js-tokens": ["js-tokens@9.0.1", "", {}, "sha512-mxa9E9ITFOt0ban3j6L5MpjwegGz6lBQmM1IJkWeBZGcMxto50+eWdjC/52xDbS2vy0k7vIMK0Fe2wfL9OQSpQ=="],
 

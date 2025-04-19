@@ -1,0 +1,26 @@
+{
+  "name": "chatgpt-web-ai-provider",
+  "description": "ai-provider for chatgpt web",
+  "keywords": [
+    "@ai-sdk",
+    "chatgpt"
+  ],
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest --config vitest.node.config.js --run",
+    "tsc": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/provider": "1.0.7",
+    "@ai-sdk/provider-utils": "2.1.6"
+  },
+  "devDependencies": {
+    "vitest": "^3.1.1"
+  }
+}

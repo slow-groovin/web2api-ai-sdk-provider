@@ -158,7 +158,7 @@ export class KimiWebRequest {
   }
 
   async getToken() {
-    //@ts-expect-error
+    //@ts-ignore
     if (!globalThis?.chrome) {
       throw new AISDKError({
         name: "moonshot-web-ai-provider env error",

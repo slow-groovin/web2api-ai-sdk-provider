@@ -30,6 +30,7 @@
   "scripts": {
     "dev": "bun run --watch src/bun-entry.ts",
     "build": "bun run build.ts",
+    "test": "vitest --run",
     "prepublishOnly": "vitest --run && bun run build"
   },
   "exports": {

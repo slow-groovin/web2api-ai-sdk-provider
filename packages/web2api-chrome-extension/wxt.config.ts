@@ -27,5 +27,14 @@ export default defineConfig({
     permissions: ["webRequest", "storage"],
     host_permissions: ["<all_urls>"],
     minimum_chrome_version: "116",
+    declarative_net_request: {
+      rule_resources: [
+        {
+          id: "ruleset",
+          enabled: true,
+          path: "rules.json",
+        },
+      ],
+    },
   },
 });

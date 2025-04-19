@@ -1,18 +1,15 @@
-import { createManagedStream } from "@/lib/stream.js";
+import { serverInfo } from "@/variables.js";
 import { globalClientManager } from "@/ws/client-manage.js";
+import { type ModelId } from "@/ws/type.js";
+import { consola } from "consola/basic";
 import { Hono } from "hono";
-import { stream, streamText, streamSSE } from "hono/streaming";
+import { streamSSE } from "hono/streaming";
+import { z } from "zod";
 import {
   ChatCompletionRequestSchema,
   type ChatCompletionResponse,
   type StreamingResponse,
 } from "./completion-types.js";
-import { z } from "zod";
-import { HTTPException } from "hono/http-exception";
-import { type ModelId } from "@/ws/type.js";
-import { serverInfo } from "@/variables.js";
-import { consola, LogLevels } from "consola/basic";
-import { LogLevels as L2 } from "consola";
 export const completionAPIHandler = new Hono();
 
 /**
