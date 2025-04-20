@@ -1,6 +1,6 @@
 ## web2api-server
 
-server part of a full web2api service
+server part of a full [web2api](https://github.com/slow-groovin/web2api-ai-sdk-provider) service
 
 ## run
 

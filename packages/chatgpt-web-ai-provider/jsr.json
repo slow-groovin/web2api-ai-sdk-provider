@@ -1,6 +1,6 @@
 {
   "name": "@slow-groovin/chatgpt-web-ai-provider",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "exports": "./src/index.ts",
   "license": "MIT",
   "publish": {

@@ -1,6 +1,11 @@
 import { type LogLevel } from "./logger.js";
-
+/**
+ * moonshot web model id, types are hard-coded
+ */
 export type MoonshotWebModelId = "kimi" | "k1" | (string & {});
+/**
+ * settings used in `.languageModel()`
+ */
 export type MoonshotWebChatSettings = {
   /**
 Whether to inject a safety prompt before all conversations.

@@ -1,11 +1,13 @@
 {
   "name": "chatgpt-web-ai-provider",
   "description": "ai-provider for chatgpt web",
+  "version": "0.3.0",
+  "homepage": "https://github.com/slow-groovin/web2api-ai-sdk-provider",
   "keywords": [
     "@ai-sdk",
     "chatgpt"
   ],
-  "version": "0.3.0",
+  "private": false,
   "type": "module",
   "license": "MIT",
   "module": "src/index.ts",
@@ -17,10 +19,10 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@ai-sdk/provider": "1.0.7",
-    "@ai-sdk/provider-utils": "2.1.6"
+    "@ai-sdk/provider": "1.0.7"
   },
   "devDependencies": {
-    "vitest": "^3.1.1"
+    "vitest": "^3.1.1",
+    "@ai-sdk/provider-utils": "2.1.6"
   }
 }

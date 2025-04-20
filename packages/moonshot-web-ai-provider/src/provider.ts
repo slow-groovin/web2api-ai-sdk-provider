@@ -1,5 +1,4 @@
 import {
-  AISDKError,
   EmbeddingModelV1,
   ProviderV1,
   UnsupportedFunctionalityError,
@@ -10,14 +9,29 @@ import type {
   MoonshotWebModelId,
   MoonshotWebProviderSettings,
 } from "./setting.js";
-// model factory function with additional methods and properties
+
+/**
+ * an [@ai-sdk](https://github.com/vercel/ai) provider to chat with the Kimi-moonshot web.
+ *
+ *
+ * **It can only run in chrome extension environment**
+ */
 export interface MoonshotWebProvider extends ProviderV1 {
+  /**
+   * same to `languageModel`
+   * @param modelId
+   * @param settings
+   */
   (
     modelId: MoonshotWebModelId,
     settings?: MoonshotWebChatSettings
   ): MoonshotWebLanguageModel;
 
-  // explicit method for targeting a specific API in case there are several
+  /**
+   * same to `languageModel`
+   * @param modelId
+   * @param settings
+   */
   chatModel(
     modelId: MoonshotWebModelId,
     settings?: MoonshotWebChatSettings
@@ -34,10 +48,15 @@ export interface MoonshotWebProvider extends ProviderV1 {
     settings?: MoonshotWebChatSettings
   ): EmbeddingModelV1<string>;
 
+  /**
+   * get support models of provider
+   */
   getModels(): Promise<string[]>;
 }
 
-// provider factory function
+/**
+ *  provider factory function
+ *  */
 export function createMoonshotWebProvider(
   options: MoonshotWebProviderSettings = {}
 ): MoonshotWebProvider {
@@ -76,7 +95,7 @@ export function createMoonshotWebProvider(
 }
 
 /**
- * Default custom provider instance.
+ * Default provider instance.
  */
 export const moonshotWebProvider: MoonshotWebProvider =
   createMoonshotWebProvider();

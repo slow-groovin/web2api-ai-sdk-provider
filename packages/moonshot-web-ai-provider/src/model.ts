@@ -8,12 +8,13 @@ import {
   LanguageModelV1ObjectGenerationMode,
   LanguageModelV1ProviderMetadata,
   LanguageModelV1StreamPart,
-  APICallError,
-  AISDKError,
 } from "@ai-sdk/provider";
 import type { MoonshotWebChatSettings, MoonshotWebModelId } from "./setting.js";
 import { KimiWebRequest } from "./request.js";
 
+/**
+ * model to manipulate text chat with the Kimi-moonshot web
+ */
 export class MoonshotWebLanguageModel implements LanguageModelV1 {
   specificationVersion: "v1" = "v1";
   provider: string = "v1";

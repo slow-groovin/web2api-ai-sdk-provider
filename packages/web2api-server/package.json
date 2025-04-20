@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/slow-groovin/web2api-ai-sdk-provider",
   "repository": {
-    "url": "github:slow-groovin/web2api-ai-sdk-provider",
+    "url": "git+https://github.com/slow-groovin/web2api-ai-sdk-provider.git",
     "directory": "packages/web2api-server",
     "type": "github"
   },
