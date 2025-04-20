@@ -16,9 +16,10 @@ This project includes:
 
 Video: TODO
 
-1. Manually install the `web2api-chrome-extension` in the browser.
+1. manually install the `web2api-chrome-extension` in the browser.
 2. start the server.
-3. log in to the AI website.
+3. open the panel page of extension, connect to server.
+4. log in to the AI website.
 
 Test:
 

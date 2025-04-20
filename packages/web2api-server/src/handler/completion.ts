@@ -31,7 +31,7 @@ completionAPIHandler.post("/chat/completions", async (c) => {
     if (globalClientManager.state !== 1) {
       return c.json(errorsBuilder.notReady(), 503);
     }
-    if (!globalClientManager.provideModels.includes(model as ModelId)) {
+    if (!globalClientManager.includeModel(model)) {
       return c.json(errorsBuilder.modelInvalid(model), 403);
     }
     if (globalClientManager.clientVersion !== serverInfo.version) {

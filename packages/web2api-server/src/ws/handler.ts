@@ -17,7 +17,9 @@ import consola from "consola/basic";
 export function handleRegister(data: RxRegisterType, ws: WSContext) {
   const { support, version } = data.content;
   consola.debug(
-    `[client] registered, clientVersion:${version}, support:${support}`
+    `[client] registered, clientVersion:${version}, support:${JSON.stringify(
+      support
+    )}`
   );
   globalClientManager.setClientVersion(version);
   globalClientManager.setProvideModels(support);

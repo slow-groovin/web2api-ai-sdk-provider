@@ -24,7 +24,7 @@ export default defineConfig({
   // };
   // },
   manifest: {
-    permissions: ["webRequest", "storage"],
+    permissions: ["webRequest", "storage", "cookies", "declarativeNetRequest"],
     host_permissions: ["<all_urls>"],
     minimum_chrome_version: "116",
     declarative_net_request: {

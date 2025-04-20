@@ -15,7 +15,7 @@ export type RxRegisterType = {
   type: "register";
   content: {
     version: string;
-    support: ModelId[];
+    support: Record<string, string[]>;
   };
 };
 
@@ -59,7 +59,7 @@ const registerSchema = z.object({
   type: z.literal("register"),
   content: z.object({
     version: z.string(),
-    support: z.array(z.string()), // 假设 ProviderType[] 是一个字符串数组
+    support: z.record(z.string(), z.array(z.string())), // 假设 ProviderType[] 是一个字符串数组
   }),
 });
 

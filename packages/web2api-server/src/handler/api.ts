@@ -11,7 +11,7 @@ import type { ModelId } from "@/ws/type.js";
 export type ServerState = {
   clientVersion: string;
   serverVersion: string;
-  supportModels: ModelId[];
+  supportModels: Record<string, string[]>;
   clientWebsocketState: number;
 };
 export const controlApiHandler = new Hono();

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { init } from '../background/communication'
-import { ServerState } from '../../../web2api-server/src/handler/api';
-import { supportModels } from '../background/variables';
+
+import { ServerState } from 'web2api-server/type';
+import ClientPanel from './ClientPanel.vue';
+import { sendMessage } from '@/messaging';
 
 
 const host = ref()
@@ -22,20 +23,22 @@ function refreshServerUrl() {
 }
 
 
+
+
 async function applyServerHost() {
   if (!host.value) {
     alert('server host is not set.')
   }
-  const currentHost = await storage.getItem('local:server-host')
-  if (currentHost === host.value) {
-    await dashFetchServerState()
-    return
-  }
   await storage.setItem('local:server-host', host.value)
-  // re-init
-  await init();
+  await sendinit();
+
+  // re-sendinit
   refreshServerUrl()
   await dashFetchServerState()
+}
+async function sendinit() {
+  await sendMessage('init', {})
+
 }
 
 const serverState = ref<ServerState>()
@@ -59,8 +62,18 @@ async function fetchServerState() {
   if (!serverApiUrl.value) {
     return false
   }
-  const resp = await fetch(serverApiUrl.value + '/state')
-  serverState.value = await resp.json()
+  try {
+    const resp = await fetch(serverApiUrl.value + '/state')
+    serverState.value = await resp.json()
+  } catch (e) {
+    console.error(e)
+    serverState.value = {
+      clientVersion: '',
+      clientWebsocketState: -1,
+      serverVersion: '',
+      supportModels: {}
+    }
+  }
   return serverState.value?.clientWebsocketState === 1
 }
 
@@ -74,12 +87,12 @@ async function dashFetchServerState() {
       break;
     }
     retryCount++
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise(resolve => setTimeout(resolve, 200));
   }
 }
 onMounted(() => {
   getHostConfig().then(() => {
-    fetchServerState()
+    dashFetchServerState()
 
   })
 
@@ -92,12 +105,13 @@ onMounted(() => {
   <div class="panel">
     <div class="header">
       <img src="/icon/96.png" class="logo" />
-      <h1 class="title">Panel</h1>
+      <h1 class="title">Web2api Panel</h1>
     </div>
 
     <div class="content">
-      <div id="client-block" class="client-block" v-if="false">
+      <div id="client-block" class="client-block" v-if="true">
         <h2 class="client-title">Client</h2>
+        <ClientPanel @after-apply="fetchServerState" />
       </div>
 
       <div id="server-block" class="server-block">
@@ -116,9 +130,6 @@ onMounted(() => {
 
           <div class="btn-group">
             <button @click="applyServerHost">apply</button>
-            <button @click="() => init().then(dashFetchServerState)" class="btn-icon">
-              <div class="material-symbols--refresh"></div>
-            </button>
 
           </div>
 
@@ -158,7 +169,13 @@ onMounted(() => {
 
           <div class="display-item">
             <span>support models:</span>
-            <span>{{ serverState?.supportModels }}</span>
+            <div>
+              <div v-for="(models, provider) in serverState?.supportModels">
+                <span style="color:blue">{{ provider }}: </span>
+                {{ models }}
+
+              </div>
+            </div>
           </div>
           <div class="btn-group">
             <button @click="fetchServerState" class="btn-icon">

@@ -1,8 +1,9 @@
 # moonshot-web-ai-provider
 
-use the Kimi-moonshot web version just like using the [@ai-sdk](https://github.com/vercel/ai) provider
+use the [@ai-sdk](https://github.com/vercel/ai) provider to chat with the Kimi-moonshot web
 
-This provider can only run in a browser extension environment.
+> [!IMPORTANT]
+> This provider can only run in a browser extension environment.
 
 ## install
 
@@ -23,9 +24,11 @@ bunx jsr add @slow-groovin/moonshot-web-ai-provider
 ## usage
 
 ```ts
-import { moonshotWebProvider } from "moonshot-web-ai-provider";
+import { createMoonshotWebProvider } from "moonshot-web-ai-provider";
 
-const model = moonshotWebProvider.languageModel("kimi", { use_search: true });
+const model = createMoonshotWebProvider().languageModel("kimi", {
+  use_search: true,
+});
 const { textStream } = streamText({
   model: chatModel,
   prompt: "hello?",

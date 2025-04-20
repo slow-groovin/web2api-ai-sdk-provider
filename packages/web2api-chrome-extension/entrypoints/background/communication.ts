@@ -1,34 +1,44 @@
-import { ModelId, RxStreamErrorType, TxType } from "web2api-server/type";
-import { RxRegisterType, RxStreamType } from "web2api-server/type";
-import { LanguageModel, streamText } from "ai";
-import { moonshotWebProvider } from "moonshot-web-ai-provider";
-import { clientInfo, supportModels } from "./variables";
+import { streamText } from "ai";
+import {
+  RxRegisterType,
+  RxStreamErrorType,
+  RxStreamType,
+  TxType,
+} from "web2api-server/type";
 import { createModel } from "./model";
+import { clientInfo } from "./variables";
 let ws: WebSocket;
 const logTitle = "[web2api-chrome-ext]";
 /**
  * init ws, send `register` message
  */
-export async function init() {
+export async function init(option?: {
+  onOpenHook?: Function;
+  force?: boolean;
+}) {
   const host = await storage.getItem("local:server-host", {
     fallback: "localhost:3001",
   });
-  if (ws && ws.readyState === 1) {
+  const wsUrl = `ws://${host}/ws`;
+
+  if (option?.force) {
     ws.close();
   }
-  ws = new WebSocket(`ws://${host}/ws`);
+  if (ws && ws.readyState === 1) {
+    if (ws.url !== wsUrl) {
+      ws.close();
+    } else {
+      return;
+    }
+  }
+
+  ws = new WebSocket(wsUrl);
 
   ws.onopen = () => {
     console.log(logTitle, "WebSocket to web2api-server had been opened.");
-    // send a register message
-    const registerMsg: RxRegisterType = {
-      type: "register",
-      content: {
-        support: supportModels,
-        version: clientInfo.version,
-      },
-    };
-    ws.send(JSON.stringify(registerMsg));
+    if (option?.onOpenHook) {
+      option.onOpenHook();
+    }
   };
 
   // 接收消息的处理
@@ -39,9 +49,16 @@ export async function init() {
       switch (data.type) {
         case "startChat":
           const { content, id, model, options } = data;
-          const chatModel = createModel(model, options);
+          const chatModel = await createModel(model, options);
           if (!chatModel) {
-            throw new Error("model is not exist for model id:" + model);
+            ws.send(
+              JSON.stringify({
+                id: id,
+                type: "stream-error",
+                content: "model is not exist for model id:" + model,
+              } as RxStreamErrorType)
+            );
+            return;
           }
           const { textStream } = streamText({
             model: chatModel,
@@ -123,6 +140,24 @@ export async function heartbeat() {
       failCount = 0; // Reset failCount if the connection is healthy
     }
   }, 5000);
+}
+
+export async function reRegister(
+  support: RxRegisterType["content"]["support"]
+) {
+  const registerMsg: RxRegisterType = {
+    type: "register",
+    content: {
+      support,
+      version: clientInfo.version,
+    },
+  };
+
+  if (!ws || ws.readyState !== 1) {
+    await init({ onOpenHook: () => ws.send(JSON.stringify(registerMsg)) });
+  } else {
+    ws.send(JSON.stringify(registerMsg));
+  }
 }
 
 function error2OpenaiSseError(e: any): {

@@ -20,14 +20,14 @@ class ClientManager {
     string,
     ReturnType<typeof createManagedStream>["writer"]
   > = new Map();
-  #provideModels: ModelId[];
+  #provideModels: Record<string, string[]>;
   #clientVersion: string = "";
   constructor() {
-    this.#provideModels = [];
+    this.#provideModels = {};
   }
   setWsContext(ws: WSContext) {
     if (this.ws && this.ws.readyState === 1) {
-      this.ws.close();
+      // this.ws.close();
     }
     this.ws = ws;
   }
@@ -36,11 +36,17 @@ class ClientManager {
     return this.ws?.readyState ?? -1; // -1 means not connect
   }
 
-  setProvideModels(provideModels: ModelId[]) {
+  setProvideModels(provideModels: Record<string, string[]>) {
     this.#provideModels = provideModels;
   }
   get provideModels() {
     return this.#provideModels;
+  }
+
+  includeModel(modelId: string) {
+    return !!Object.values(this.#provideModels).find((arr) =>
+      arr.includes(modelId)
+    );
   }
 
   setClientVersion(version: string) {

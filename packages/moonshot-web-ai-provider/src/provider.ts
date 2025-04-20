@@ -1,4 +1,9 @@
-import { AISDKError, EmbeddingModelV1, ProviderV1 } from "@ai-sdk/provider";
+import {
+  AISDKError,
+  EmbeddingModelV1,
+  ProviderV1,
+  UnsupportedFunctionalityError,
+} from "@ai-sdk/provider";
 import { MoonshotWebLanguageModel } from "./model.js";
 import type {
   MoonshotWebChatSettings,
@@ -28,6 +33,8 @@ export interface MoonshotWebProvider extends ProviderV1 {
     modelId: MoonshotWebModelId,
     settings?: MoonshotWebChatSettings
   ): EmbeddingModelV1<string>;
+
+  getModels(): Promise<string[]>;
 }
 
 // provider factory function
@@ -56,12 +63,14 @@ export function createMoonshotWebProvider(
   provider.chatModel = createModel;
   provider.languageModel = createModel;
   provider.textEmbeddingModel = () => {
-    throw new AISDKError({
-      name: " not supported",
-      message: " this model is not supported.",
+    throw new UnsupportedFunctionalityError({
+      functionality: "not suppported",
     });
   };
   provider.languageModel = createModel;
+  provider.getModels = async () => {
+    return ["kimi", "k1"];
+  };
 
   return provider;
 }

@@ -160,11 +160,9 @@ export class KimiWebRequest {
   async getToken() {
     //@ts-ignore
     if (!globalThis?.chrome) {
-      throw new AISDKError({
-        name: "moonshot-web-ai-provider env error",
-        message:
-          "moonshot-web-ai-provider must be called in a browser runtime(such as chrome extension)",
-      });
+      throw new Error(
+        "moonshot-web-ai-provider must be called in a browser runtime(such as chrome extension)"
+      );
     }
     const refresh_token = await storage.getItem("local:kimi-refresh_token");
     const access_token = await storage.getItem("local:kimi-access_token");

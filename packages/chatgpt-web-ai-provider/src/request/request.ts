@@ -157,7 +157,9 @@ export class ChatgptWebRequest {
     const data = await resp.json().catch(() => ({}));
     if (!data.accessToken) {
       //no auth
-      throw new NoAuthError("Get token failed, no token in response");
+      throw new NoAuthError(
+        "Get token failed, no token in response, please check your login status"
+      );
     }
     await setValue(data.accessToken, this.option.accessTokenSetter);
     return data.accessToken;

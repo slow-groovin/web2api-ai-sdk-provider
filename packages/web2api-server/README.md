@@ -55,8 +55,8 @@ response sample:
 
 ```json
 {
-  "clientVersion": "0.2",
-  "serverVersion": "0.2",
+  "clientVersion": "0.3",
+  "serverVersion": "0.3",
   "supportModels": ["kimi", "gpt-4o-mini"],
   "clientWebsocketState": 1
 }
@@ -74,7 +74,7 @@ response sample:
 response sample:
 
 ```json
-"0.2.0"
+"0.3.0"
 ```
 
 ## dev
