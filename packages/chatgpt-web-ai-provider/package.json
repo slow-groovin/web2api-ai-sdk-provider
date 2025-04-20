@@ -16,10 +16,15 @@
   },
   "scripts": {
     "test": "vitest --config vitest.node.config.js --run",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "prepublishOnly": "bun run test && bun run tsc",
+    "publish": "cd chatgpt-web-ai-provider && jsr publish && bunx jsr2npm @slow-groovin/chatgpt-web-ai-provider --log-level debug --clear"
   },
   "dependencies": {
-    "@ai-sdk/provider": "1.0.7"
+    "@ai-sdk/provider": "1.0.7",
+    "radash": "^12.1.0",
+    "js-sha3": "^0.9.3",
+    "zod": "^3.0.0"
   },
   "devDependencies": {
     "vitest": "^3.1.1",
