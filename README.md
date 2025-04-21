@@ -27,7 +27,7 @@ const model = createMoonshotWebProvider().languageModel("kimi", {
   use_search: true,
 });
 const { textStream } = streamText({
-  model: chatModel,
+  model: model,
   prompt: "hello?",
 });
 ```
