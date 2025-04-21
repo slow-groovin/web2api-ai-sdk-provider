@@ -1,5 +1,6 @@
 import { onMessage } from "@/messaging";
 import { heartbeat, init, reRegister } from "./communication";
+import { updateRulesForModifyHeader } from "./rules";
 
 export default defineBackground(() => {
   console.log("Hello background!", new Date().toLocaleString(), {
@@ -16,4 +17,9 @@ export default defineBackground(() => {
     await reRegister(message.data);
   });
   console.debug("[onMessage]", "reRegister");
+
+  browser.runtime.onInstalled.addListener(async () => {
+    await updateRulesForModifyHeader();
+    console.debug("[dynamic-rules]", "");
+  });
 });

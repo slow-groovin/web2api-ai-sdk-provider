@@ -58,9 +58,9 @@ include the web request operation as a provider implemented based on the Languag
 
 currently supports:
 
-- moonshot: [moonshot-web-ai-provider](/packages/moonshot-web-ai-provider/README.md) ![NPM Version](https://img.shields.io/npm/v/moonshot-web-ai-provider)
+- moonshot: [moonshot-web-ai-provider](/packages/moonshot-web-ai-provider/README.md) [![NPM Version](https://img.shields.io/npm/v/moonshot-web-ai-provider?color=crimson)](https://www.npmjs.com/package/moonshot-web-ai-provider)
 
-- chatgpt: [chatgpt-web-ai-provider](/packages/chatgpt-web-ai-provider/README.md) ![NPM Version](https://img.shields.io/npm/v/chatgpt-web-ai-provider)
+- chatgpt: [chatgpt-web-ai-provider](/packages/chatgpt-web-ai-provider/README.md) [![NPM Version](https://img.shields.io/npm/v/chatgpt-web-ai-provider?color=crimson)](https://www.npmjs.com/package/chatgpt-web-ai-provider)
 
 install:
 
@@ -77,7 +77,9 @@ communicate with `web2api-server`.
 
 ### `web2api-server`
 
-[`web2api-server` README](/packages/web2api-server/README.md)
+[![NPM Version](https://img.shields.io/npm/v/web2api-server?color=crimson)](https://www.npmjs.com/package/web2api-server)
+
+[`web2api-server`](/packages/web2api-server/README.md)
 communicate with `web2api-chrome-extension`, and provide an HTTP service for the openai-compatible API `/v1/chat/completion`.
 
 run:

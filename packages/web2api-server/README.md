@@ -57,7 +57,10 @@ response sample:
 {
   "clientVersion": "0.3",
   "serverVersion": "0.3",
-  "supportModels": ["kimi", "gpt-4o-mini"],
+  "supportModels": {
+    "chatgpt": ["chatgpt-4o", "chatgpt-4o-mini", "o4-mini", "auto"],
+    "moonshot": ["k1", "kimi"]
+  },
   "clientWebsocketState": 1
 }
 ```

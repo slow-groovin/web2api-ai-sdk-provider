@@ -1,6 +1,6 @@
 # moonshot-web-ai-provider
 
-![NPM Version](https://img.shields.io/npm/v/moonshot-web-ai-provider)
+[![NPM Version](https://img.shields.io/npm/v/moonshot-web-ai-provider?color=crimson)](https://www.npmjs.com/package/moonshot-web-ai-provider)
 [![JSR](https://jsr.io/badges/@ryoppippi/mirror-jsr-to-npm)](https://jsr.io/@slow-groovin/moonshot-web-ai-provider)
 
 use the [@ai-sdk](https://github.com/vercel/ai) provider to chat with the Kimi-moonshot web
