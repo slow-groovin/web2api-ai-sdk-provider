@@ -1,7 +1,4 @@
-import { build } from "bun";
 import { defineConfig } from "wxt";
-import { visualizer } from "rollup-plugin-visualizer";
-import { rand } from "@vueuse/core";
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
@@ -24,8 +21,8 @@ export default defineConfig({
   // };
   // },
   manifest: {
-    permissions: ["webRequest", "storage", "cookies", "declarativeNetRequest"],
-    host_permissions: ["<all_urls>"],
+    permissions: ["storage", "cookies", "declarativeNetRequest"],
+    host_permissions: ["https://chatgpt.com/*", "https://kimi.moonshot.cn/*"],
     minimum_chrome_version: "116",
     // declarative_net_request: {
     //   rule_resources: [

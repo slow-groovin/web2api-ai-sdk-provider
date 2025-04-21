@@ -41,14 +41,16 @@ more details in [moonshot-web-ai-provider](/packages/moonshot-web-ai-provider/RE
 3. open the panel page of extension, connect to server.
 4. log in to the AI website.
 
-(Video: TODO)
-
 test endpoint:
 
 ```sh
 curl -X POST "http://localhost:3000/v1/chat/completions" -H "Content-Type: application/json" -d '{"model":"auto","messages":[{"role":"user","content":"give me a random story"}]}'
 
 ```
+
+Video:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/H8sgWQaIlYw?si=wnfI-9VPjaEVKlQF" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## components
 
