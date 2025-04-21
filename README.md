@@ -50,7 +50,11 @@ curl -X POST "http://localhost:3000/v1/chat/completions" -H "Content-Type: appli
 
 Video:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/H8sgWQaIlYw?si=wnfI-9VPjaEVKlQF" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+https://github.com/user-attachments/assets/289948d7-5750-4db2-ba25-4f72132f823c
+
+
 
 ## components
 
