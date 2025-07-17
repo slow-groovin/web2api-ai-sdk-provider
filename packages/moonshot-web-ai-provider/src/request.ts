@@ -40,17 +40,17 @@ export class KimiWebRequest {
     if (!access_token && !refresh_token) {
       throw new APICallError({
         message: "moonshot web not login. please login first.",
-        url: "https://kimi.moonshot.cn",
+        url: "https://www.kimi.com",
         requestBodyValues: undefined,
         statusCode: 401,
         isRetryable: false,
       });
     }
-    const response = await fetch("https://kimi.moonshot.cn/api/user", {
+    const response = await fetch("https://www.kimi.com/api/user", {
       headers: {
         accept: "*/*",
         Authorization: `Bearer ${access_token}`,
-        Origin: "https://kimi.moonshot.cn",
+        Origin: "https://www.kimi.com",
       },
       method: "GET",
     });
@@ -70,7 +70,7 @@ export class KimiWebRequest {
       throw new APICallError({
         message:
           "moonshot web unpected error. please follow the data to fix it.",
-        url: "https://kimi.moonshot.cn/api",
+        url: "https://www.kimi.com/api",
         requestBodyValues: undefined,
         data: await response.json(),
         statusCode: response.status,
@@ -91,12 +91,12 @@ export class KimiWebRequest {
     const { refresh_token: pre_refresh_token } = await this.getToken();
 
     const response = await globalThis.fetch(
-      "https://kimi.moonshot.cn/api/auth/token/refresh",
+      "https://www.kimi.com/api/auth/token/refresh",
       {
         headers: {
           accept: "*/*",
           Authorization: `Bearer ${pre_refresh_token}`,
-          Origin: "https://kimi.moonshot.cn",
+          Origin: "https://www.kimi.com",
         },
         method: "GET",
       }
@@ -104,7 +104,7 @@ export class KimiWebRequest {
     if (response.status === 401) {
       throw new APICallError({
         message: "moonshot web login state expired. please login and retry.",
-        url: "https://kimi.moonshot.cn",
+        url: "https://www.kimi.com",
         requestBodyValues: undefined,
         statusCode: 401,
         data: await response.json(),
@@ -114,7 +114,7 @@ export class KimiWebRequest {
       throw new APICallError({
         message:
           "moonshot web refresh token failed. please follow the data to fix it.",
-        url: "https://kimi.moonshot.cn/api/auth/token/refresh",
+        url: "https://www.kimi.com/api/auth/token/refresh",
         requestBodyValues: undefined,
         statusCode: 401,
         isRetryable: false,
@@ -125,7 +125,7 @@ export class KimiWebRequest {
     if (!refresh_token || !access_token) {
       throw new APICallError({
         message: "moonshot web return no token.",
-        url: "https://kimi.moonshot.cn/api/auth/token/refresh",
+        url: "https://www.kimi.com/api/auth/token/refresh",
         requestBodyValues: undefined,
         statusCode: 500,
         isRetryable: false,
@@ -140,12 +140,12 @@ export class KimiWebRequest {
 
   async createChat() {
     const { access_token } = await this.getToken();
-    const resp = await fetch("https://kimi.moonshot.cn/api/chat", {
+    const resp = await fetch("https://www.kimi.com/api/chat", {
       headers: {
         accept: "*/*",
         "content-type": "application/json",
         Authorization: `Bearer ${access_token}`,
-        Origin: "https://kimi.moonshot.cn",
+        Origin: "https://www.kimi.com",
       },
       method: "POST",
       body: JSON.stringify({ name: "未命名会话", is_example: false }),
@@ -194,7 +194,7 @@ export class KimiWebRequest {
     // 建立 SSE 连接
     this.logger.debug("begin to fetch...");
     const response = await fetch(
-      `https://kimi.moonshot.cn/api/chat/${chatId}/completion/stream`,
+      `https://www.kimi.com/api/chat/${chatId}/completion/stream`,
       {
         method: "POST",
         headers: {

@@ -2,7 +2,7 @@ export async function updateRulesForModifyHeader() {
   const extensionId = browser.runtime.id; // Get the current extension's ID
   const domains = [
     { domain: "chatgpt.com", id: 100 },
-    { domain: "kimi.moonshot.cn", id: 101 },
+    { domain: "www.kimi.com", id: 101 },
   ];
   for (const { domain, id } of domains) {
     updateModifyHeadersDynamicRuleForDomain({ domain, id }, extensionId);

@@ -46,9 +46,11 @@ export class MoonshotWebLanguageModel implements LanguageModelV1 {
     providerMetadata?: LanguageModelV1ProviderMetadata;
     logprobs?: LanguageModelV1LogProbs;
   }> {
-    const { prompt } = options;
+    const { prompt, abortSignal } = options;
     const kimiReq = new KimiWebRequest(this.modelId, this.settings);
     let text = "";
+    //todo: change input from  prompt to options
+    //handle: stopSequence, responseFormat, abortSignal headers
     const { stream, rawCall, rawResponse, request, warnings } =
       await kimiReq.stream(prompt);
     const reader = stream.getReader();

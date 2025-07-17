@@ -21,8 +21,10 @@ export default defineConfig({
   // };
   // },
   manifest: {
+    name: "web2api-suite (chrome extension part)",
+    description: "This comes as part of web2api-suite. please visit https://github.com/slow-groovin/web2api-ai-sdk-provider for more detail.",
     permissions: ["storage", "cookies", "declarativeNetRequest"],
-    host_permissions: ["https://chatgpt.com/*", "https://kimi.moonshot.cn/*"],
+    host_permissions: ["https://chatgpt.com/*", "https://www.kimi.com/*"],
     minimum_chrome_version: "116",
     // declarative_net_request: {
     //   rule_resources: [
