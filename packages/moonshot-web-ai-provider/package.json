@@ -5,7 +5,7 @@
     "@ai-sdk",
     "moonshot"
   ],
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "module",
   "license": "MIT",
   "module": "src/index.ts",
@@ -16,7 +16,7 @@
     "test": "vitest --config vitest.node.config.js --run",
     "tsc": "tsc --noEmit",
     "prepublishOnly": "bun run test && bun run tsc",
-    "publish": "cd moonshot-web-ai-provider && jsr publish && bunx jsr2npm @slow-groovin/moonshot-web-ai-provider --log-level debug"
+    "publish": "jsr publish && bunx jsr2npm @slow-groovin/moonshot-web-ai-provider --log-level debug"
   },
   "dependencies": {
     "@ai-sdk/provider": "1.0.7",

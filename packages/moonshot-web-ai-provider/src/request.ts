@@ -313,6 +313,10 @@ export class KimiWebRequest {
     }
 
     return {
+      kimiplus_id: "kimi",
+      history: [],
+      refs: [],
+      scene_labels: [],
       messages: messages,
       model: modelId,
       use_search: settings.use_search ?? false,

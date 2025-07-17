@@ -63,7 +63,12 @@ export function createMoonshotWebProvider(
   const createModel = (
     modelId: MoonshotWebModelId,
     settings?: MoonshotWebChatSettings
-  ) => new MoonshotWebLanguageModel(modelId, settings);
+  ) => {
+    if (modelId === 'k1' || modelId === 'kimi') {
+      console.warn(`modelId 'k1' and 'kimi' has been deprecated.`)
+    }
+    return new MoonshotWebLanguageModel(modelId, settings)
+  };
 
   const provider = function (
     modelId: MoonshotWebModelId,
@@ -88,7 +93,7 @@ export function createMoonshotWebProvider(
   };
   provider.languageModel = createModel;
   provider.getModels = async () => {
-    return ["kimi", "k1"];
+    return ["kimi", "k1", "k1.5-thinking", "k2", "k1.5"];
   };
 
   return provider;
