@@ -93,7 +93,7 @@ export function createMoonshotWebProvider(
   };
   provider.languageModel = createModel;
   provider.getModels = async () => {
-    return ["kimi", "k1", "k1.5-thinking", "k2", "k1.5"];
+    return ["k1.5-thinking", "k2", "k1.5"];
   };
 
   return provider;

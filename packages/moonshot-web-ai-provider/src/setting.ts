@@ -2,7 +2,7 @@ import { type LogLevel } from "./logger.js";
 /**
  * moonshot web model id, types are hard-coded
  */
-export type MoonshotWebModelId = "kimi" | "k1" | "k1.5-thinking" | "k1.5" | "k2" | (string & {});
+export type MoonshotWebModelId = "k1.5-thinking" | "k1.5" | "k2" | (string & {});
 /**
  * settings used in `.languageModel()`
  */
